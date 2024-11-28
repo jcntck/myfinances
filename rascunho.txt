@@ -1,0 +1,12 @@
+UC1 - Criar Categoria
+
+Campos: Id, Nome
+
+- Nome deve ser obrigatório (dominio) - OK
+- Nome deve ser único (aplicação) - OK
+
+UC2 - Criar transação de débito
+
+Campos: Id, Data, Descrição, Valor, Categoria (entidade)
+
+- Descrição e Categoria são obrigatórios (dominio)
