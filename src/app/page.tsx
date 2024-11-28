@@ -1,7 +1,7 @@
 import Application from "@/Application";
 import Link from "next/link";
 
-export default async function Home(): Promise<JSX.Element> {
+export default async function Home() {
   const { CreateCategory, GetCategory } = Application.Instance.Category;
   const output = await CreateCategory.execute({ name: "Teste" });
   const category = await GetCategory.execute(output.categoryId);

@@ -1,12 +1,19 @@
-import crypto from "node:crypto";
+import UUID from "@/domain/vo/UUID";
 
 export default class Category {
-  constructor(readonly id: string, readonly name: string) {
+  private _id: UUID;
+
+  constructor(id: string, readonly name: string) {
     if (!name) throw new Error("[Category] name is required");
+    this._id = new UUID(id);
+  }
+
+  get id(): string {
+    return this._id.getValue();
   }
 
   static create(input: { name: string }) {
-    const id = crypto.randomUUID();
+    const id = UUID.create().getValue();
     return new Category(id, input.name);
   }
 }

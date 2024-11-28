@@ -7,12 +7,19 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest",
+    "services:up": "docker compose --env-file .env up -d",
+    "services:stop": "docker compose stop",
+    "services:down": "docker compose down --volumes"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "next": "15.0.3",
+    "nodemon": "^3.1.7",
+    "pg-promise": "^11.10.2",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@testing-library/react": "^16.0.1",

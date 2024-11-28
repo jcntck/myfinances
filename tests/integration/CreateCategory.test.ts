@@ -1,15 +1,18 @@
-import { beforeAll, expect, test } from "vitest";
+import { afterAll, beforeAll, expect, test } from "vitest";
 import CreateCategory from "@/application/usecase/category/CreateCategory";
 import GetCategory from "@/application/usecase/category/GetCategory";
-import CategoryRepositoryFake from "@/infra/repository/CategoryRepository";
+import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
 import CategoryRepository from "@/domain/repository/CategoryRepository";
+import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseConnection";
 
+let databaseConnection: DatabaseConnection;
 let categoryRepository: CategoryRepository;
 let createCategory: CreateCategory;
 let getCategory: GetCategory;
 
 beforeAll(() => {
-  categoryRepository = new CategoryRepositoryFake();
+  databaseConnection = new PgPromiseAdapter();
+  categoryRepository = new CategoryRepositoryDatabase(databaseConnection);
   createCategory = new CreateCategory(categoryRepository);
   getCategory = new GetCategory(categoryRepository);
 });
@@ -29,4 +32,9 @@ test("Não deve criar uma categoria com o mesmo nome", async () => {
   await expect(() => createCategory.execute(inputCreateCategory)).rejects.toThrowError(
     "[CreateCategory] Category already exists"
   );
+});
+
+afterAll(async () => {
+  await databaseConnection.truncate(["myfinances.categories"]);
+  await databaseConnection.disconnect();
 });

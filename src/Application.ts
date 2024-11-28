@@ -4,17 +4,26 @@ import CreateCategory, {
 } from "@/application/usecase/category/CreateCategory";
 import GetCategory, { GetCategoryOutput } from "@/application/usecase/category/GetCategory";
 import UseCase from "@/application/usecase/UseCase";
-import CategoryRepositoryFake from "@/infra/repository/CategoryRepository";
+import CategoryRepository from "@/domain/repository/CategoryRepository";
+import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseConnection";
+import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
 
 export default class Application {
   private static instance: Application;
-  private category: CategoryDomain;
+  private databaseConnection!: DatabaseConnection;
+  private categoryRepository!: CategoryRepository;
+  private category!: CategoryDomain;
 
   private constructor() {
-    const categoryRepository = new CategoryRepositoryFake();
+    if (process.env.NODE_ENV !== "test") this.register();
+  }
+
+  register(databaseConnection?: DatabaseConnection, categoryRepository?: CategoryRepository): void {
+    this.databaseConnection = databaseConnection ?? new PgPromiseAdapter();
+    this.categoryRepository = categoryRepository ?? new CategoryRepositoryDatabase(this.databaseConnection);
     this.category = {
-      CreateCategory: new CreateCategory(categoryRepository),
-      GetCategory: new GetCategory(categoryRepository),
+      CreateCategory: new CreateCategory(this.categoryRepository),
+      GetCategory: new GetCategory(this.categoryRepository),
     };
   }
 
