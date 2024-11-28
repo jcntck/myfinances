@@ -2,10 +2,10 @@ import UseCase from "@/application/usecase/UseCase";
 import Category from "@/domain/entities/Category";
 import CategoryRepository from "@/domain/repository/CategoryRepository";
 
-export default class CreateCategory implements UseCase<Input, Output> {
+export default class CreateCategory implements UseCase<CreateCategoryInput, CreateCategoryOutput> {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  async execute(input: Input): Promise<Output> {
+  async execute(input: CreateCategoryInput): Promise<CreateCategoryOutput> {
     const category = Category.create(input);
     const categoryExists = await this.categoryRepository.findByName(category.name);
     if (categoryExists) throw new Error("[CreateCategory] Category already exists");
@@ -16,10 +16,10 @@ export default class CreateCategory implements UseCase<Input, Output> {
   }
 }
 
-type Input = {
+export type CreateCategoryInput = {
   name: string;
 };
 
-type Output = {
+export type CreateCategoryOutput = {
   categoryId: string;
 };
