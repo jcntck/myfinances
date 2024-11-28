@@ -2,22 +2,6 @@ import Category from "@/domain/entities/Category";
 import CategoryRepository from "@/domain/repository/CategoryRepository";
 import DatabaseConnection from "@/infra/database/DatabaseConnection";
 
-export class CategoryRepositoryFake implements CategoryRepository {
-  private categories: Category[] = [];
-
-  async create(category: Category): Promise<void> {
-    this.categories.push(category);
-  }
-
-  async findById(id: string): Promise<Category | undefined> {
-    return this.categories.find((category) => category.id === id);
-  }
-
-  async findByName(name: string): Promise<Category | undefined> {
-    return this.categories.find((category) => category.name.toLocaleLowerCase() === name.toLocaleLowerCase());
-  }
-}
-
 export class CategoryRepositoryDatabase implements CategoryRepository {
   constructor(private readonly connection: DatabaseConnection) {}
 

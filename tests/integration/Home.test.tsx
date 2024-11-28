@@ -27,6 +27,5 @@ test("Deve renderizar a pagina inicial", async () => {
 });
 
 afterAll(async () => {
-  await databaseConnection.truncate(["myfinances.categories"]);
   await databaseConnection.disconnect();
 });

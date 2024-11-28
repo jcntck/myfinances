@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS myfinances.categories (
 
 CREATE TABLE IF NOT EXISTS myfinances.transactions (
   id UUID PRIMARY KEY,
+  date timestamp NOT NULL,
   description text NOT NULL,
   value numeric NOT NULL
 );

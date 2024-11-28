@@ -2,13 +2,16 @@ UC1 - Criar Categoria [Feito]
 
 Campos: Id, Nome
 
-- Validar se Id é do UUID
+- Validar se Id é do UUID - OK
 - Nome deve ser obrigatório (dominio) - OK
 - Nome deve ser único (aplicação) - OK
 
-UC2 - Criar transação de débito
+UC2 - Criar transação de débito [Feito]
 
 Campos: Id, Data, Descrição, Valor, Categoria (entidade)
 
-- Validar se Id é do UUID
-- Descrição e Categoria são obrigatórios (dominio)
+- Validar se Id é do UUID - OK
+- Todos os campos strings são devem ser vazios (dominio) OK
+- Não deve permitir valor zerado (dominio) OK
+- categoryId deve ser um UUID (dominio) - OK
+- Categoria deve existir (aplicaçào) - OK

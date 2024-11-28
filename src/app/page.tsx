@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default async function Home() {
   const { CreateCategory, GetCategory } = Application.Instance.Category;
-  const output = await CreateCategory.execute({ name: "Teste" });
+  const output = await CreateCategory.execute({ name: "HomePage Category" });
   const category = await GetCategory.execute(output.categoryId);
   return (
     <div>
