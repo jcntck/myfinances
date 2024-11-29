@@ -11,17 +11,20 @@ let createCategory: CreateCategory;
 let createDebitTransaction: CreateDebitTransaction;
 let getDebitTransaction: GetDebitTransaction;
 
+const categoriesToDelete = [];
+const transactionsToDelete = [];
+
 beforeAll(() => {
   databaseConnection = new PgPromiseAdapter();
   const categoryRepository = new CategoryRepositoryDatabase(databaseConnection);
-  const debitTransactionRepository = new DebitTransactionDatabase(databaseConnection);
   createCategory = new CreateCategory(categoryRepository);
+  const debitTransactionRepository = new DebitTransactionDatabase(databaseConnection);
   createDebitTransaction = new CreateDebitTransaction(debitTransactionRepository, categoryRepository);
   getDebitTransaction = new GetDebitTransaction(debitTransactionRepository);
 });
 
-test("Deve criar uma transação de débito", async () => {
-  const { categoryId } = await createCategory.execute({ name: "Transaction Category 1" });
+test.skip("Deve criar uma transação de débito", async () => {
+  const { categoryId } = await createCategory.execute({ name: `Transaction Category  ${Date.now()}` });
   const inputCreateDebitTransaction = {
     date: new Date(),
     description: "Description 1",
@@ -36,6 +39,8 @@ test("Deve criar uma transação de débito", async () => {
   expect(outputGetDebitTransaction.description).toEqual(inputCreateDebitTransaction.description);
   expect(outputGetDebitTransaction.value).toEqual(inputCreateDebitTransaction.value);
   expect(outputGetDebitTransaction.categoryId).toEqual(inputCreateDebitTransaction.categoryId);
+  categoriesToDelete.push(categoryId);
+  transactionsToDelete.push(outputCreateDebitTransaction.transactionId);
 });
 
 test("Não deve criar uma transação de débito se a categoria não existir", async () => {

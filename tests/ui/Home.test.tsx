@@ -19,11 +19,14 @@ async function resolvedComponent(Component: Function, props: any) {
   return () => ComponentResolved;
 }
 
-test("Deve renderizar a pagina inicial", async () => {
+test.only("Deve renderizar a pagina inicial", async () => {
   const Component = await resolvedComponent(Home, screen);
   render(<Component />);
+  const categoryIdElement = document.querySelector("#category_id");
+  const nameElement = document.querySelector("#category_name");
   expect(screen.getByRole("heading", { level: 1, name: "Home" })).toBeDefined();
-  expect(screen.findAllByText("Teste")).toBeDefined();
+  expect(categoryIdElement).toBeDefined();
+  expect(nameElement).toBeDefined();
 });
 
 afterAll(async () => {

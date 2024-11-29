@@ -16,7 +16,7 @@ beforeAll(() => {
 });
 
 test("Deve criar uma categoria", async () => {
-  const inputCreateCategory = { name: "Category Use Case 1" };
+  const inputCreateCategory = { name: `Category ${Date.now()}` };
   const outputCreateCategory = await createCategory.execute(inputCreateCategory);
   expect(outputCreateCategory.categoryId).toBeDefined();
   const outputGetCategory = await getCategory.execute(outputCreateCategory.categoryId);
@@ -25,7 +25,7 @@ test("Deve criar uma categoria", async () => {
 });
 
 test("Não deve criar uma categoria com o mesmo nome", async () => {
-  const inputCreateCategory = { name: "Educação" };
+  const inputCreateCategory = { name: `Category ${Date.now()}` };
   await createCategory.execute(inputCreateCategory);
   await expect(() => createCategory.execute(inputCreateCategory)).rejects.toThrowError(
     "[CreateCategory] Category already exists"

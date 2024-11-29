@@ -1,0 +1,1 @@
+cat ./clean.sql | docker exec -i myfinances_db psql -U postgres -d myfinances
