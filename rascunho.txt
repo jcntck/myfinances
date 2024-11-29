@@ -20,7 +20,7 @@ Campos: Id, Data, Descrição, Valor, Categoria (entidade)
 
 --- 
 
-UC - Atualizar Categoria
+UC - Atualizar Categoria [Feito]
 
 Campos: Nome
 
@@ -34,7 +34,7 @@ UC - Deletar Categoria [Feito]
 
 ---
 
-UC - Atualizar Transação de débito
+UC - Atualizar Transação de débito [Feito]
 
 Campos: Descrição, Categoria
 
@@ -42,4 +42,4 @@ Campos: Descrição, Categoria
 
 ---
 
-UC - Deletar Transação
+UC - Deletar Transação [Feito]

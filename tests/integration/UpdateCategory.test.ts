@@ -27,6 +27,13 @@ test("Deve atualizar uma categoria", async () => {
   expect(outputGetCategory.name).toBe(updatedName);
 });
 
+test("Não deve atualizar uma categoria que não existe", async () => {
+  const inputUpdateCategory = { id: crypto.randomUUID(), name: "Category not found" };
+  await expect(() => updateCategory.execute(inputUpdateCategory)).rejects.toThrowError(
+    "[UpdateCategory] Category not found"
+  );
+});
+
 test("Não deve atualizar uma categoria com nome que já existe", async () => {
   const updatedName = `Category updated ${Date.now()}`;
   await createCategory.execute({ name: updatedName });

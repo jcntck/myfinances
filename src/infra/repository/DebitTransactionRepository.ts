@@ -19,6 +19,18 @@ export class DebitTransactionDatabase implements DebitTransactionRepository {
     );
   }
 
+  async update(debitTransaction: DebitTransaction): Promise<void> {
+    await this.connection.query("update myfinances.transactions set description = $1, category_id = $2 where id = $3", [
+      debitTransaction.description,
+      debitTransaction.categoryId,
+      debitTransaction.id,
+    ]);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.connection.query("delete from myfinances.transactions where id = $1", [id]);
+  }
+
   async findById(id: string): Promise<DebitTransaction | undefined> {
     const [debitTransactionData] = await this.connection.query("select * from myfinances.transactions where id = $1", [
       id,
