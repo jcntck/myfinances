@@ -1,3 +1,5 @@
+# DIA 01
+
 UC - Criar Categoria [Feito]
 
 Campos: Id, Nome
@@ -10,7 +12,7 @@ Campos: Id, Nome
 
 UC - Criar transação de débito [Feito]
 
-Campos: Id, Data, Descrição, Valor, Categoria (entidade)
+Campos: Id, Data, Descrição, Valor, Categoria (entidade), status, type = 'debit'
 
 - Validar se Id é do UUID - OK
 - Todos os campos strings são devem ser vazios (dominio) OK
@@ -43,3 +45,9 @@ Campos: Descrição, Categoria
 ---
 
 UC - Deletar Transação [Feito]
+
+# DIA 02
+
+UC - Criar uma transação de crédito
+
+Campos: Id, Data, Descrição, Valor, Categoria (entidade), status, type = 'credit'

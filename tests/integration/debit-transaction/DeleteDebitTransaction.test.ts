@@ -5,6 +5,8 @@ import GetDebitTransaction from "@/application/usecase/debit-transactions/GetDeb
 import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseConnection";
 import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
 import { DebitTransactionDatabase } from "@/infra/repository/DebitTransactionRepository";
+import CategoryDummy from "@/tests/dummies/CategoryDummy";
+import DebitTransactionDummy from "@/tests/dummies/DebitTransactionDummy";
 import { beforeAll, expect, test } from "vitest";
 
 let databaseConnection: DatabaseConnection;
@@ -24,13 +26,8 @@ beforeAll(() => {
 });
 
 test("Deve deletar uma transação", async () => {
-  const category1 = await createCategory.execute({ name: `Transaction Category ${Date.now()}` });
-  const inputCreateDebitTransaction = {
-    date: new Date(),
-    description: "Description 1",
-    value: 100.5,
-    categoryId: category1.categoryId,
-  };
+  const category1 = await createCategory.execute(CategoryDummy.create());
+  const inputCreateDebitTransaction = DebitTransactionDummy.create({ categoryId: category1.categoryId });
   const outputCreateDebitTransaction = await createDebitTransaction.execute(inputCreateDebitTransaction);
   await deleteDebitTransaction.execute(outputCreateDebitTransaction.transactionId);
   await expect(() => getDebitTransaction.execute(outputCreateDebitTransaction.transactionId)).rejects.toThrowError(

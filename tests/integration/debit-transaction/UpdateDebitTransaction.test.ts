@@ -6,6 +6,8 @@ import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseC
 import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
 import { DebitTransactionDatabase } from "@/infra/repository/DebitTransactionRepository";
 import { beforeAll, expect, test } from "vitest";
+import DebitTransactionDummy from "@/tests/dummies/DebitTransactionDummy";
+import CategoryDummy from "@/tests/dummies/CategoryDummy";
 
 let databaseConnection: DatabaseConnection;
 let createCategory: CreateCategory;
@@ -24,20 +26,14 @@ beforeAll(() => {
 });
 
 test("Deve atualizar uma transação de débito", async () => {
-  const category1 = await createCategory.execute({ name: `Transaction Category ${Date.now()}` });
-  const category2 = await createCategory.execute({ name: `Transaction Category ${Date.now()}` });
-  const inputCreateDebitTransaction = {
-    date: new Date(),
-    description: "Description 1",
-    value: 100.5,
-    categoryId: category1.categoryId,
-  };
+  const category1 = await createCategory.execute(CategoryDummy.create());
+  const category2 = await createCategory.execute(CategoryDummy.create());
+  const inputCreateDebitTransaction = DebitTransactionDummy.create({ categoryId: category1.categoryId });
   const outputCreateDebitTransaction = await createDebitTransaction.execute(inputCreateDebitTransaction);
-  const inputUpdateDebitTransaction = {
-    id: outputCreateDebitTransaction.transactionId,
-    description: "Description 2",
+  const inputUpdateDebitTransaction = DebitTransactionDummy.update({
+    transactionId: outputCreateDebitTransaction.transactionId,
     categoryId: category2.categoryId,
-  };
+  });
   await updateDebitTransaction.execute(inputUpdateDebitTransaction);
   const outputGetDebitTransaction = await getDebitTransaction.execute(outputCreateDebitTransaction.transactionId);
   expect(outputGetDebitTransaction.description).toBe(inputUpdateDebitTransaction.description);
@@ -45,30 +41,23 @@ test("Deve atualizar uma transação de débito", async () => {
 });
 
 test("Não deve atualizar uma transação que não existe", async () => {
-  const inputUpdateDebitTransaction = {
-    id: crypto.randomUUID(),
-    description: "Description 2",
+  const inputUpdateDebitTransaction = DebitTransactionDummy.update({
+    transactionId: crypto.randomUUID(),
     categoryId: crypto.randomUUID(),
-  };
+  });
   await expect(() => updateDebitTransaction.execute(inputUpdateDebitTransaction)).rejects.toThrowError(
     "[UpdateDebitTransaction] Debit transaction not found"
   );
 });
 
 test("Não deve atualizar uma transação se a categoria não existir", async () => {
-  const category1 = await createCategory.execute({ name: `Transaction Category ${Date.now()}` });
-  const inputCreateDebitTransaction = {
-    date: new Date(),
-    description: "Description 1",
-    value: 100.5,
-    categoryId: category1.categoryId,
-  };
+  const category1 = await createCategory.execute(CategoryDummy.create());
+  const inputCreateDebitTransaction = DebitTransactionDummy.create({ categoryId: category1.categoryId });
   const outputCreateDebitTransaction = await createDebitTransaction.execute(inputCreateDebitTransaction);
-  const inputUpdateDebitTransaction = {
-    id: outputCreateDebitTransaction.transactionId,
-    description: "Description 2",
+  const inputUpdateDebitTransaction = DebitTransactionDummy.update({
+    transactionId: outputCreateDebitTransaction.transactionId,
     categoryId: crypto.randomUUID(),
-  };
+  });
   await expect(() => updateDebitTransaction.execute(inputUpdateDebitTransaction)).rejects.toThrowError(
     "[UpdateDebitTransaction] Category not found"
   );

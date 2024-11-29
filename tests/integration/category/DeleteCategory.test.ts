@@ -6,6 +6,8 @@ import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseC
 import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
 import { DebitTransactionDatabase } from "@/infra/repository/DebitTransactionRepository";
 import { beforeAll, expect, test } from "vitest";
+import CategoryDummy from "@/tests/dummies/CategoryDummy";
+import DebitTransactionDummy from "@/tests/dummies/DebitTransactionDummy";
 
 let databaseConnection: DatabaseConnection;
 let createCategory: CreateCategory;
@@ -24,7 +26,7 @@ beforeAll(() => {
 });
 
 test("Deve deletar uma categoria", async () => {
-  const outputCreateCategory = await createCategory.execute({ name: `Category to delete ${Date.now()}` });
+  const outputCreateCategory = await createCategory.execute(CategoryDummy.create());
   await deleteCategory.execute(outputCreateCategory.categoryId);
   await expect(() => getCategory.execute(outputCreateCategory.categoryId)).rejects.toThrowError(
     "[GetCategory] Category not found"
@@ -32,13 +34,8 @@ test("Deve deletar uma categoria", async () => {
 });
 
 test("Não deve permitir deletar uma categoria se houver transações ligadas a ela", async () => {
-  const outputCreateCategory = await createCategory.execute({ name: `Category to delete ${Date.now()}` });
-  await createDebitTransaction.execute({
-    date: new Date(),
-    description: "Description 1",
-    value: 100.5,
-    categoryId: outputCreateCategory.categoryId,
-  });
+  const outputCreateCategory = await createCategory.execute(CategoryDummy.create());
+  await createDebitTransaction.execute(DebitTransactionDummy.create({ categoryId: outputCreateCategory.categoryId }));
   await expect(() => deleteCategory.execute(outputCreateCategory.categoryId)).rejects.toThrowError(
     "[DeleteCategory] Category has transactions"
   );

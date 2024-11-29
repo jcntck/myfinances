@@ -5,6 +5,8 @@ import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseC
 import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
 import { DebitTransactionDatabase } from "@/infra/repository/DebitTransactionRepository";
 import { afterAll, beforeAll, expect, test } from "vitest";
+import DebitTransactionDummy from "@/tests/dummies/DebitTransactionDummy";
+import CategoryDummy from "@/tests/dummies/CategoryDummy";
 
 let databaseConnection: DatabaseConnection;
 let createCategory: CreateCategory;
@@ -21,13 +23,8 @@ beforeAll(() => {
 });
 
 test("Deve criar uma transação de débito", async () => {
-  const { categoryId } = await createCategory.execute({ name: `Transaction Category  ${Date.now()}` });
-  const inputCreateDebitTransaction = {
-    date: new Date(),
-    description: "Description 1",
-    value: 100.5,
-    categoryId: categoryId,
-  };
+  const { categoryId } = await createCategory.execute(CategoryDummy.create());
+  const inputCreateDebitTransaction = DebitTransactionDummy.create({ categoryId });
   const outputCreateDebitTransaction = await createDebitTransaction.execute(inputCreateDebitTransaction);
   expect(outputCreateDebitTransaction.transactionId).toBeDefined();
   const outputGetDebitTransaction = await getDebitTransaction.execute(outputCreateDebitTransaction.transactionId);
@@ -39,15 +36,9 @@ test("Deve criar uma transação de débito", async () => {
 });
 
 test("Não deve criar uma transação de débito se a categoria não existir", async () => {
-  const inputCreateDebitTransaction = {
-    date: new Date(),
-    description: "Description 1",
-    value: 100.5,
-    categoryId: crypto.randomUUID(),
-  };
-  await expect(() => createDebitTransaction.execute(inputCreateDebitTransaction)).rejects.toThrowError(
-    "[CreateDebitTransaction] Category not found"
-  );
+  await expect(() =>
+    createDebitTransaction.execute(DebitTransactionDummy.create({ categoryId: crypto.randomUUID() }))
+  ).rejects.toThrowError("[CreateDebitTransaction] Category not found");
 });
 
 afterAll(async () => {
