@@ -1,21 +1,34 @@
 import DebitTransaction from "@/domain/entities/DebitTransaction";
+import { TransactionStatus } from "@/domain/entities/Transaction";
 import { expect, test } from "vitest";
 
 test.each([
-  { date: new Date(), description: "", value: 10, categoryId: "categoryId", missingField: "description" },
-  { date: new Date(), description: "Description 1", value: 10, categoryId: "", missingField: "categoryId" },
+  {
+    date: new Date(),
+    description: "",
+    value: 10,
+    categoryId: "categoryId",
+    missingField: "description",
+  },
+  {
+    date: new Date(),
+    description: "Description 1",
+    value: 10,
+    categoryId: "",
+    missingField: "categoryId",
+  },
 ])(
-  "Não deve criar uma transação de débito com campos do tipo string vazios. Campo: $missingField",
+  "Não deve criar uma transação com campos do tipo string vazios. Campo: $missingField",
   ({ missingField, ...input }) => {
     expect(() => DebitTransaction.create(input.date, input.description, input.value, input.categoryId)).toThrowError(
-      `[DebitTransaction] ${missingField} cannot be empty`
+      `[Transaction] ${missingField} cannot be empty`
     );
   }
 );
 
-test("Não deve criar uma transação débito se o valor for 0", () => {
+test("Não deve criar uma transação se o valor for 0", () => {
   expect(() => DebitTransaction.create(new Date(), "Description 1", 0, "categoryId")).toThrowError(
-    `[DebitTransaction] value cannot be 0`
+    `[Transaction] value cannot be 0`
   );
 });
 

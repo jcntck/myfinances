@@ -1,5 +1,6 @@
 import UseCase from "@/application/usecase/UseCase";
 import DebitTransaction from "@/domain/entities/DebitTransaction";
+import { TransactionStatus } from "@/domain/entities/Transaction";
 import CategoryRepository from "@/domain/repository/CategoryRepository";
 import DebitTransactionRepository from "@/domain/repository/DebitTransactionRepository";
 
@@ -17,7 +18,9 @@ export default class UpdateDebitTransaction implements UseCase<UpdateDebitTransa
       debitTransaction.date,
       input.description ?? debitTransaction.description,
       debitTransaction.value,
-      input.categoryId ?? debitTransaction.categoryId
+      input.categoryId ?? debitTransaction.categoryId,
+      (input.status as TransactionStatus) ?? debitTransaction.status,
+      debitTransaction.type
     );
     const categoryExists = await this.categoryRepository.findById(updatedDebitTransaction.categoryId);
     if (!categoryExists) throw new Error("[UpdateDebitTransaction] Category not found");
@@ -29,4 +32,5 @@ export type UpdateDebitTransactionInput = {
   id: string;
   description?: string;
   categoryId?: string;
+  status?: string;
 };

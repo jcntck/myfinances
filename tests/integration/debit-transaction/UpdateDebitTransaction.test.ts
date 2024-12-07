@@ -28,7 +28,9 @@ beforeAll(() => {
 test("Deve atualizar uma transação de débito", async () => {
   const category1 = await createCategory.execute(CategoryDummy.create());
   const category2 = await createCategory.execute(CategoryDummy.create());
-  const inputCreateDebitTransaction = DebitTransactionDummy.create({ categoryId: category1.categoryId });
+  const inputCreateDebitTransaction = DebitTransactionDummy.create({
+    categoryId: category1.categoryId,
+  });
   const outputCreateDebitTransaction = await createDebitTransaction.execute(inputCreateDebitTransaction);
   const inputUpdateDebitTransaction = DebitTransactionDummy.update({
     transactionId: outputCreateDebitTransaction.transactionId,
@@ -52,7 +54,9 @@ test("Não deve atualizar uma transação que não existe", async () => {
 
 test("Não deve atualizar uma transação se a categoria não existir", async () => {
   const category1 = await createCategory.execute(CategoryDummy.create());
-  const inputCreateDebitTransaction = DebitTransactionDummy.create({ categoryId: category1.categoryId });
+  const inputCreateDebitTransaction = DebitTransactionDummy.create({
+    categoryId: category1.categoryId,
+  });
   const outputCreateDebitTransaction = await createDebitTransaction.execute(inputCreateDebitTransaction);
   const inputUpdateDebitTransaction = DebitTransactionDummy.update({
     transactionId: outputCreateDebitTransaction.transactionId,

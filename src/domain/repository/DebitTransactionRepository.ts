@@ -1,4 +1,4 @@
-import DebitTransaction from "@/domain/entities/DebitTransaction";
+import DebitTransaction from '@/domain/entities/Transaction';
 
 export default interface DebitTransactionRepository {
   create(debitTransaction: DebitTransaction): Promise<void>;
@@ -6,3 +6,4 @@ export default interface DebitTransactionRepository {
   delete(id: string): Promise<void>;
   findById(id: string): Promise<DebitTransaction | undefined>;
 }
+

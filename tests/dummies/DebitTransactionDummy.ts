@@ -13,6 +13,7 @@ export default class DebitTransactionDummy {
       id: input.transactionId,
       description: `DebitTransaction Description ${Date.now()}`,
       categoryId: input.categoryId,
+      status: input.status ?? "pending",
     };
   }
 }
@@ -31,10 +32,12 @@ type CreateOutput = {
 type UpdateInput = {
   transactionId: string;
   categoryId: string;
+  status?: string;
 };
 
 type UpdateOutput = {
   id: string;
   description: string;
   categoryId: string;
+  status: string;
 };

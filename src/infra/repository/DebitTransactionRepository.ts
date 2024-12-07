@@ -1,4 +1,3 @@
-import Category from "@/domain/entities/Category";
 import DebitTransaction from "@/domain/entities/DebitTransaction";
 import DebitTransactionRepository from "@/domain/repository/DebitTransactionRepository";
 import DatabaseConnection from "@/infra/database/DatabaseConnection";
@@ -8,23 +7,24 @@ export class DebitTransactionDatabase implements DebitTransactionRepository {
 
   async create(debitTransaction: DebitTransaction): Promise<void> {
     await this.connection.query(
-      "insert into myfinances.transactions (id, date, description, value, category_id) values ($1, $2, $3, $4, $5)",
+      "insert into myfinances.transactions (id, date, description, value, status, type, category_id) values ($1, $2, $3, $4, $5, $6, $7)",
       [
         debitTransaction.id,
         debitTransaction.date,
         debitTransaction.description,
         debitTransaction.value,
+        debitTransaction.status,
+        debitTransaction.type,
         debitTransaction.categoryId,
       ]
     );
   }
 
   async update(debitTransaction: DebitTransaction): Promise<void> {
-    await this.connection.query("update myfinances.transactions set description = $1, category_id = $2 where id = $3", [
-      debitTransaction.description,
-      debitTransaction.categoryId,
-      debitTransaction.id,
-    ]);
+    await this.connection.query(
+      "update myfinances.transactions set description = $1, category_id = $2, status = $3 where id = $4",
+      [debitTransaction.description, debitTransaction.categoryId, debitTransaction.status, debitTransaction.id]
+    );
   }
 
   async delete(id: string): Promise<void> {
@@ -41,7 +41,9 @@ export class DebitTransactionDatabase implements DebitTransactionRepository {
       debitTransactionData.date,
       debitTransactionData.description,
       parseFloat(debitTransactionData.value),
-      debitTransactionData.category_id
+      debitTransactionData.category_id,
+      debitTransactionData.status,
+      debitTransactionData.type
     );
   }
 }
