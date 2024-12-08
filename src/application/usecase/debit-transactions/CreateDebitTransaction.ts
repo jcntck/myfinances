@@ -1,7 +1,7 @@
 import UseCase from "@/application/usecase/UseCase";
 import DebitTransaction from "@/domain/entities/DebitTransaction";
 import CategoryRepository from "@/domain/repository/CategoryRepository";
-import DebitTransactionRepository from "@/domain/repository/DebitTransactionRepository";
+import DebitTransactionRepository from "@/domain/repository/TransactionRepository";
 
 export default class CreateDebitTransaction
   implements UseCase<CreateDebitTransactionInput, CreateDebitTransactionOutput>

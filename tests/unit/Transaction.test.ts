@@ -1,5 +1,4 @@
 import DebitTransaction from "@/domain/entities/DebitTransaction";
-import { TransactionStatus } from "@/domain/entities/Transaction";
 import { expect, test } from "vitest";
 
 test.each([

@@ -10,11 +10,11 @@ export enum TransactionType {
   CREDIT = "credit",
 }
 
-export default abstract class Transaction {
+export default class Transaction {
   private _id: UUID;
   private _categoryId: UUID;
 
-  protected constructor(
+  constructor(
     id: string,
     readonly date: Date,
     readonly description: string,

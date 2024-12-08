@@ -1,29 +1,29 @@
-import DebitTransaction from "@/domain/entities/DebitTransaction";
-import DebitTransactionRepository from "@/domain/repository/DebitTransactionRepository";
+import Transaction from "@/domain/entities/Transaction";
+import TransactionRepository from "@/domain/repository/TransactionRepository";
 import DatabaseConnection from "@/infra/database/DatabaseConnection";
 
-export class DebitTransactionDatabase implements DebitTransactionRepository {
+export class TransactionRepositoryDatabase implements TransactionRepository {
   constructor(private readonly connection: DatabaseConnection) {}
 
-  async create(debitTransaction: DebitTransaction): Promise<void> {
+  async create(transaction: Transaction): Promise<void> {
     await this.connection.query(
       "insert into myfinances.transactions (id, date, description, value, status, type, category_id) values ($1, $2, $3, $4, $5, $6, $7)",
       [
-        debitTransaction.id,
-        debitTransaction.date,
-        debitTransaction.description,
-        debitTransaction.value,
-        debitTransaction.status,
-        debitTransaction.type,
-        debitTransaction.categoryId,
+        transaction.id,
+        transaction.date,
+        transaction.description,
+        transaction.value,
+        transaction.status,
+        transaction.type,
+        transaction.categoryId,
       ]
     );
   }
 
-  async update(debitTransaction: DebitTransaction): Promise<void> {
+  async update(transaction: Transaction): Promise<void> {
     await this.connection.query(
       "update myfinances.transactions set description = $1, category_id = $2, status = $3 where id = $4",
-      [debitTransaction.description, debitTransaction.categoryId, debitTransaction.status, debitTransaction.id]
+      [transaction.description, transaction.categoryId, transaction.status, transaction.id]
     );
   }
 
@@ -31,19 +31,17 @@ export class DebitTransactionDatabase implements DebitTransactionRepository {
     await this.connection.query("delete from myfinances.transactions where id = $1", [id]);
   }
 
-  async findById(id: string): Promise<DebitTransaction | undefined> {
-    const [debitTransactionData] = await this.connection.query("select * from myfinances.transactions where id = $1", [
-      id,
-    ]);
-    if (!debitTransactionData) return undefined;
-    return new DebitTransaction(
-      debitTransactionData.id,
-      debitTransactionData.date,
-      debitTransactionData.description,
-      parseFloat(debitTransactionData.value),
-      debitTransactionData.category_id,
-      debitTransactionData.status,
-      debitTransactionData.type
+  async findById(id: string): Promise<Transaction | undefined> {
+    const [transactionData] = await this.connection.query("select * from myfinances.transactions where id = $1", [id]);
+    if (!transactionData) return undefined;
+    return new Transaction(
+      transactionData.id,
+      transactionData.date,
+      transactionData.description,
+      parseFloat(transactionData.value),
+      transactionData.category_id,
+      transactionData.status,
+      transactionData.type
     );
   }
 }
