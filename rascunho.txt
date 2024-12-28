@@ -48,6 +48,6 @@ UC - Deletar Transação [Feito]
 
 # DIA 02
 
-UC - Criar uma transação de crédito
+UC - Criar uma transação de crédito [Feito]
 
 Campos: Id, Data, Descrição, Valor, Categoria (entidade), status, type = 'credit'
