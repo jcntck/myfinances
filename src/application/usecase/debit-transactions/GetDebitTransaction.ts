@@ -1,4 +1,5 @@
 import UseCase from "@/application/usecase/UseCase";
+import { TransactionStatus, TransactionType } from "@/domain/entities/Transaction";
 import DebitTransactionRepository from "@/domain/repository/TransactionRepository";
 
 export default class GetDebitTransaction implements UseCase<string, GetDebitTransactionOutput> {
@@ -13,6 +14,8 @@ export default class GetDebitTransaction implements UseCase<string, GetDebitTran
       description: debitTransaction.description,
       value: debitTransaction.value,
       categoryId: debitTransaction.categoryId,
+      status: debitTransaction.status,
+      type: debitTransaction.type,
     };
   }
 }
@@ -23,4 +26,6 @@ type GetDebitTransactionOutput = {
   description: string;
   value: number;
   categoryId: string;
+  status: TransactionStatus;
+  type: TransactionType;
 };

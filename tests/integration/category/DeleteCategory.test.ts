@@ -4,7 +4,7 @@ import GetCategory from "@/application/usecase/category/GetCategory";
 import CreateDebitTransaction from "@/application/usecase/debit-transactions/CreateDebitTransaction";
 import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseConnection";
 import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
-import { DebitTransactionDatabase } from "@/infra/repository/DebitTransactionRepository";
+import { TransactionRepositoryDatabase } from "@/infra/repository/TransactionRepository";
 import { beforeAll, expect, test } from "vitest";
 import CategoryDummy from "@/tests/dummies/CategoryDummy";
 import DebitTransactionDummy from "@/tests/dummies/DebitTransactionDummy";
@@ -21,7 +21,7 @@ beforeAll(() => {
   createCategory = new CreateCategory(categoryRepository);
   getCategory = new GetCategory(categoryRepository);
   deleteCategory = new DeleteCategory(categoryRepository);
-  const debitTransactionRepository = new DebitTransactionDatabase(databaseConnection);
+  const debitTransactionRepository = new TransactionRepositoryDatabase(databaseConnection);
   createDebitTransaction = new CreateDebitTransaction(debitTransactionRepository, categoryRepository);
 });
 

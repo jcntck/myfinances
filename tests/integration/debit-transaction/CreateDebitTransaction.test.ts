@@ -3,7 +3,7 @@ import CreateDebitTransaction from "@/application/usecase/debit-transactions/Cre
 import GetDebitTransaction from "@/application/usecase/debit-transactions/GetDebitTransaction";
 import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseConnection";
 import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
-import { TransactionRepositoryDatabase } from "@/infra/repository/DebitTransactionRepository";
+import { TransactionRepositoryDatabase } from "@/infra/repository/TransactionRepository";
 import { afterAll, beforeAll, expect, test } from "vitest";
 import DebitTransactionDummy from "@/tests/dummies/DebitTransactionDummy";
 import CategoryDummy from "@/tests/dummies/CategoryDummy";
@@ -33,6 +33,8 @@ test("Deve criar uma transação de débito", async () => {
   expect(outputGetDebitTransaction.description).toEqual(inputCreateDebitTransaction.description);
   expect(outputGetDebitTransaction.value).toEqual(inputCreateDebitTransaction.value);
   expect(outputGetDebitTransaction.categoryId).toEqual(inputCreateDebitTransaction.categoryId);
+  expect(outputGetDebitTransaction.status).toEqual("pending");
+  expect(outputGetDebitTransaction.type).toEqual("debit");
 });
 
 test("Não deve criar uma transação de débito se a categoria não existir", async () => {
