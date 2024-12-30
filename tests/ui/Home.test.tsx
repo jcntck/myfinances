@@ -21,7 +21,7 @@ async function resolvedComponent(Component: Function, props: any) {
   return () => ComponentResolved;
 }
 
-test.only("Deve renderizar a pagina inicial", async () => {
+test("Deve renderizar a pagina inicial", async () => {
   const createCategory = new CreateCategory(categoryRepository);
   const createdCategory = CategoryDummy.create();
   const createCategoryOutput = await createCategory.execute(createdCategory);
