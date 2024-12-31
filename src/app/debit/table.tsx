@@ -1,7 +1,10 @@
 "use client";
 
+import CategoryCombobox from "@/app/debit/category-combobox";
 import { DebitTransaction } from "@/app/debit/page";
+import { TransactionsActions } from "@/app/debit/transactions-actions";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
@@ -31,6 +34,7 @@ interface DataTableProps<TData, TValue> {
 export const columns: ColumnDef<DebitTransaction>[] = [
   {
     accessorKey: "date",
+
     header: ({ column }) => <DataTableColumnHeader column={column} title="Data" />,
     cell: ({ row }) => {
       const date = row.getValue("date") as Date;
@@ -42,10 +46,28 @@ export const columns: ColumnDef<DebitTransaction>[] = [
   {
     accessorKey: "description",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Descrição" />,
+    enableHiding: false,
   },
   {
     accessorKey: "category",
+    accessorFn: (data) => data.category,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Categoria" />,
+    cell: ({ row }) => {
+      const category = row.getValue("category") as { name: string };
+      return category.name;
+    },
+    sortingFn: (rowA, rowB, columnId) => {
+      const categoryA = rowA.getValue(columnId) as { name: string };
+      const categoryB = rowB.getValue(columnId) as { name: string };
+      if (categoryA.name < categoryB.name) return -1;
+      if (categoryA.name > categoryB.name) return 1;
+      return 0;
+    },
+    filterFn: (row, id, value) => {
+      const category = row.getValue(id) as { id: string };
+      return category.id === value;
+    },
+    enableHiding: false,
   },
   {
     accessorKey: "status",
@@ -104,19 +126,32 @@ export function TransactionsTable<TData, TValue>({ columns, data, info }: DataTa
       sorting,
       columnFilters,
     },
+    initialState: {
+      columnVisibility: {
+        status: false,
+      },
+    },
   });
 
   const hasData = table.getRowModel().rows?.length;
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex py-4 gap-3">
         <Input
-          placeholder="Filter description..."
-          value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("category")?.setFilterValue(event.target.value)}
+          placeholder="Buscar por descrição..."
+          value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn("description")?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
+        <CategoryCombobox
+          value={table.getColumn("category")?.getFilterValue() as string}
+          onValueChange={(newValue) => table.getColumn("category")?.setFilterValue(newValue)}
+        />
+        <div className="ml-auto flex gap-3">
+          <DataTableViewOptions table={table} />
+          <TransactionsActions table={table} />
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

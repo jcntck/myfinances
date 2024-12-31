@@ -1,3 +1,4 @@
+import { DatePickerWithRange } from "@/app/debit/date-picker-with-range";
 import { columns, TransactionsTable } from "@/app/debit/table";
 
 export type DebitTransaction = {
@@ -5,7 +6,7 @@ export type DebitTransaction = {
   date: Date;
   description: string;
   value: number;
-  category: string;
+  category: { id: string; name: string };
   status: "pending" | "paid";
 };
 
@@ -17,9 +18,10 @@ export default async function Debit({}) {
   return (
     <>
       <div className="container mx-auto py-4 flex flex-col gap-2">
-        <h1 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0">
-          Transações de débito
-        </h1>
+        <div className="flex items-center justify-between border-b pb-2">
+          <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight first:mt-0">Transações de débito</h1>
+          <DatePickerWithRange />
+        </div>
         <TransactionsTable
           data={transactions}
           columns={columns}
@@ -34,8 +36,26 @@ export default async function Debit({}) {
   );
 }
 
+const categories = [
+  {
+    id: "category-1",
+    name: "Category 01",
+  },
+  {
+    id: "category-2",
+    name: "Category 02",
+  },
+  {
+    id: "category-3",
+    name: "Category 03",
+  },
+  {
+    id: "category-4",
+    name: "Category 04",
+  },
+];
+
 const generateDummyTransactions = (length: number): DebitTransaction[] => {
-  const categories = ["Category 01", "Category 02", "Category 03", "Category 04"];
   const now = new Date();
   return Array.from({ length }).map((_) => ({
     id: crypto.randomUUID(),
