@@ -3,8 +3,17 @@
 import CategoryCombobox from "@/app/debit/category-combobox";
 import { DebitTransaction } from "@/app/debit/page";
 import { TransactionsActions } from "@/app/debit/transactions-actions";
+import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
@@ -18,7 +27,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import clsx from "clsx";
-import { Circle, CircleCheck } from "lucide-react";
+import { Circle, CircleCheck, MoreHorizontal, MoreVertical } from "lucide-react";
 import * as React from "react";
 
 interface DataTableProps<TData, TValue> {
@@ -87,14 +96,14 @@ export const columns: ColumnDef<DebitTransaction>[] = [
   },
   {
     accessorKey: "value",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Valor" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Valor" className="justify-end" />,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("value"));
       const formatted = new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
       }).format(amount);
-      return <div className={clsx("font-medium")}>{formatted}</div>;
+      return <div className={clsx("font-medium text-right")}>{formatted}</div>;
     },
     footer: (info) => {
       const balance = info.table
@@ -105,9 +114,37 @@ export const columns: ColumnDef<DebitTransaction>[] = [
         style: "currency",
         currency: "BRL",
       }).format(balance);
-      return <div className={clsx("font-semibold")}>{formatted}</div>;
+      return <div className={clsx("font-semibold text-right")}>{formatted}</div>;
     },
     enableHiding: false,
+  },
+  {
+    id: "actions",
+    size: 75,
+    cell: ({ row }) => {
+      const payment = row.original;
+      return (
+        <div className="text-right pl-1">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
+                Copy payment ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
   },
 ];
 
