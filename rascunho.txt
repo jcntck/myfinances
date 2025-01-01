@@ -51,3 +51,22 @@ UC - Deletar Transação [Feito]
 UC - Criar uma transação de crédito [Feito]
 
 Campos: Id, Data, Descrição, Valor, Categoria (entidade), status, type = 'credit'
+
+---
+
+Usar DAO
+
+UC - Listar categorias
+
+Paginado
+Filtros de Nome
+
+UC - Listar transações de débito por mes
+
+sem paginação
+definir filtros conforme necessidade
+
+UC - Listar transações de débito por mes
+
+sem paginação
+definir filtros conforme necessidade
