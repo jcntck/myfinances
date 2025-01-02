@@ -1,6 +1,7 @@
-import { DatePickerWithRange } from '@/app/debit/date-picker-with-range';
-import { columns, TransactionsTable } from '@/app/debit/table';
-import { DebitTransaction } from '@/app/_types/entities';
+import { Category, DebitTransaction } from '@/app/_types/entities';
+import { DatePickerWithRange } from '@/components/shared/date-picker-with-range';
+import { dataTableColumns } from '@/components/transactions/data-table/columns';
+import { TransactionsDataTable } from '@/components/transactions/data-table';
 
 export default async function DebitTransactionsPage() {
   const transactions = generateDummyTransactions(10);
@@ -13,12 +14,16 @@ export default async function DebitTransactionsPage() {
         </h1>
         <DatePickerWithRange />
       </div>
-      <TransactionsTable data={transactions} columns={columns} />
+      <TransactionsDataTable
+        data={transactions}
+        columns={dataTableColumns}
+        categories={categories}
+      />
     </main>
   );
 }
 
-const categories = [
+const categories: Category[] = [
   {
     id: 'category-1',
     name: 'Category 01',
@@ -34,6 +39,10 @@ const categories = [
   {
     id: 'category-4',
     name: 'Category 04',
+  },
+  {
+    id: 'category-5',
+    name: 'Category 05',
   },
 ];
 

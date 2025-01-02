@@ -6,3 +6,8 @@ export type DebitTransaction = {
   category: { id: string; name: string };
   status: "pending" | "paid";
 };
+
+export type Category = {
+  id: string;
+  name: string;
+};

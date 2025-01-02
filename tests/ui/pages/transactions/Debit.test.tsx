@@ -1,6 +1,6 @@
-import { DatePickerWithRange } from '@/app/debit/date-picker-with-range';
+import { DatePickerWithRange } from '@/components/shared/date-picker-with-range';
 import Debit from '@/app/transacao/debito/page';
-import { TransactionsTable } from '@/app/debit/table';
+import { TransactionsTable } from '@/components/transactions/data-table';
 import { resolveServerSideComponent } from '@/tests/helpers/resolved-component';
 import { render, screen } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
