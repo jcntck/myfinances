@@ -20,7 +20,7 @@ export default class GetDebitTransaction implements UseCase<string, GetDebitTran
   }
 }
 
-type GetDebitTransactionOutput = {
+export type GetDebitTransactionOutput = {
   id: string;
   date: Date;
   description: string;

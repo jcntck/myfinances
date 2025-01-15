@@ -1,6 +1,7 @@
 import UseCase from "@/application/usecase/UseCase";
 import { TransactionStatus, TransactionType } from "@/domain/entities/Transaction";
 import TransactionRepository from "@/domain/repository/TransactionRepository";
+import { it } from "node:test";
 
 export default class GetCreditTransaction implements UseCase<string, GetCreditTransactionOutput> {
   constructor(private readonly transactionRepository: TransactionRepository) {}
