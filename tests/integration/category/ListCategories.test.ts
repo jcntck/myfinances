@@ -4,7 +4,7 @@ import CategoryDAODatabase from "@/core/infra/dao/CategoryDaoDatabase";
 import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
 import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";
 import CategoryDummy from "@/tests/dummies/CategoryDummy";
-import { beforeAll, expect, test } from "vitest";
+import { afterAll, beforeAll, expect, test } from "vitest";
 
 let databaseConnection: DatabaseConnection;
 let listCategories: ListCategories;
@@ -35,4 +35,8 @@ test("Deve listar categorias com filtro de nome", async () => {
   expect(items).toBeDefined();
   expect(items[0].name).toBeDefined();
   expect(items[0].name).toBe(category.name);
+});
+
+afterAll(async () => {
+  await databaseConnection.disconnect();
 });
