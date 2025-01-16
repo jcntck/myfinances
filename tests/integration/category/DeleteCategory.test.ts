@@ -1,10 +1,10 @@
-import CreateCategory from "@/application/usecase/category/CreateCategory";
-import DeleteCategory from "@/application/usecase/category/DeleteCategory";
-import GetCategory from "@/application/usecase/category/GetCategory";
-import CreateDebitTransaction from "@/application/usecase/debit-transactions/CreateDebitTransaction";
-import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseConnection";
-import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
-import { TransactionRepositoryDatabase } from "@/infra/repository/TransactionRepository";
+import CreateCategory from "@/core/application/usecase/category/CreateCategory";
+import DeleteCategory from "@/core/application/usecase/category/DeleteCategory";
+import GetCategory from "@/core/application/usecase/category/GetCategory";
+import CreateDebitTransaction from "@/core/application/usecase/debit-transactions/CreateDebitTransaction";
+import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
+import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepository";
+import { TransactionRepositoryDatabase } from "@/core/infra/repository/TransactionRepository";
 import { beforeAll, expect, test } from "vitest";
 import CategoryDummy from "@/tests/dummies/CategoryDummy";
 import DebitTransactionDummy from "@/tests/dummies/DebitTransactionDummy";

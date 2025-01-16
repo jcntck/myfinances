@@ -1,4 +1,4 @@
-import Category from "@/domain/entities/Category";
+import Category from "@/core/domain/entities/Category";
 import { expect, test } from "vitest";
 
 test("Não deve criar uma categoria sem nome", () => {

@@ -1,4 +1,4 @@
-import UUID from "@/domain/vo/UUID";
+import UUID from "@/core/domain/vo/UUID";
 import { test, expect } from "vitest";
 
 test("Deve criar um UUID", () => {

@@ -1,8 +1,8 @@
-import CreateCategory from "@/application/usecase/category/CreateCategory";
-import GetCategory from "@/application/usecase/category/GetCategory";
-import UpdateCategory from "@/application/usecase/category/UpdateCategory";
-import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseConnection";
-import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
+import CreateCategory from "@/core/application/usecase/category/CreateCategory";
+import GetCategory from "@/core/application/usecase/category/GetCategory";
+import UpdateCategory from "@/core/application/usecase/category/UpdateCategory";
+import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
+import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepository";
 import { beforeAll, expect, test } from "vitest";
 import CategoryDummy from "@/tests/dummies/CategoryDummy";
 

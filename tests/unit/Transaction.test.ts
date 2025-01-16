@@ -1,4 +1,4 @@
-import DebitTransaction from "@/domain/entities/DebitTransaction";
+import DebitTransaction from "@/core/domain/entities/DebitTransaction";
 import { expect, test } from "vitest";
 
 test.each([

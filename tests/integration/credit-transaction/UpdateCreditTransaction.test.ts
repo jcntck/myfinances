@@ -1,10 +1,10 @@
-import CreateCategory from "@/application/usecase/category/CreateCategory";
-import CreateCreditTransaction from "@/application/usecase/credit-transactions/CreateCreditTransaction";
-import GetCreditTransaction from "@/application/usecase/credit-transactions/GetCreditTransaction";
-import UpdateCreditTransaction from "@/application/usecase/credit-transactions/UpdateCreditTransaction";
-import DatabaseConnection, { PgPromiseAdapter } from "@/infra/database/DatabaseConnection";
-import { CategoryRepositoryDatabase } from "@/infra/repository/CategoryRepository";
-import { TransactionRepositoryDatabase } from "@/infra/repository/TransactionRepository";
+import CreateCategory from "@/core/application/usecase/category/CreateCategory";
+import CreateCreditTransaction from "@/core/application/usecase/credit-transactions/CreateCreditTransaction";
+import GetCreditTransaction from "@/core/application/usecase/credit-transactions/GetCreditTransaction";
+import UpdateCreditTransaction from "@/core/application/usecase/credit-transactions/UpdateCreditTransaction";
+import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
+import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepository";
+import { TransactionRepositoryDatabase } from "@/core/infra/repository/TransactionRepository";
 import CategoryDummy from "@/tests/dummies/CategoryDummy";
 import CreditTransactionDummy from "@/tests/dummies/CreditTransactionDummy";
 import { afterAll, beforeAll, expect, test } from "vitest";
