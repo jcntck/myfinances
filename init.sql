@@ -1,5 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS myfinances;
 
+create extension unaccent schema myfinances;
+
 CREATE TABLE
   IF NOT EXISTS myfinances.categories (id UUID PRIMARY KEY, name text NOT NULL UNIQUE);
 

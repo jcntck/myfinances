@@ -4,8 +4,8 @@ import DeleteCreditTransaction from "@/core/application/usecase/credit-transacti
 import GetCreditTransaction from "@/core/application/usecase/credit-transactions/GetCreditTransaction";
 import UpdateCreditTransaction from "@/core/application/usecase/credit-transactions/UpdateCreditTransaction";
 import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
-import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepository";
-import { TransactionRepositoryDatabase } from "@/core/infra/repository/TransactionRepository";
+import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";
+import { TransactionRepositoryDatabase } from "@/core/infra/repository/TransactionRepositoryDatabase";
 import CategoryDummy from "@/tests/dummies/CategoryDummy";
 import CreditTransactionDummy from "@/tests/dummies/CreditTransactionDummy";
 import { afterAll, beforeAll, expect, test } from "vitest";

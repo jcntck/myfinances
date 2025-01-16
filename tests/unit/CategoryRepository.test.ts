@@ -1,6 +1,6 @@
 import CategoryRepository from "@/core/domain/repository/CategoryRepository";
 import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
-import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepository";
+import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";
 import crypto from "crypto";
 import { afterAll, beforeAll, expect, test } from "vitest";
 

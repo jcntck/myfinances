@@ -1,6 +1,7 @@
 import pgp from "pg-promise";
 
 export default interface DatabaseConnection {
+  buildStatement(statement: string, params?: any[]): string;
   query(statement: string, params?: any[]): Promise<any>;
   disconnect(): Promise<void>;
   truncate(tables: string[]): Promise<void>;
@@ -15,7 +16,12 @@ export class PgPromiseAdapter implements DatabaseConnection {
     const user = process.env.POSTGRES_USER;
     const password = process.env.POSTGRES_PASSWORD;
     const database = process.env.POSTGRES_DATABASE;
+
     this.connection = pgp()(`postgres://${user}:${password}@${host}:${port}/${database}`);
+  }
+
+  buildStatement(statement: string, params?: any[]): string {
+    return pgp.as.format(statement, params);
   }
 
   async query(statement: string, params?: any[]): Promise<any> {

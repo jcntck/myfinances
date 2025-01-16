@@ -7,7 +7,7 @@ import GetCategory, { GetCategoryOutput } from "@/core/application/usecase/categ
 import UpdateCategory, { UpdateCategoryInput } from "@/core/application/usecase/category/UpdateCategory";
 import UseCase from "@/core/application/usecase/UseCase";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
-import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepository";
+import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";
 
 export type CategoryDomain = {
   CreateCategory: UseCase<CreateCategoryInput, CreateCategoryOutput>;

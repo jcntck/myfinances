@@ -11,8 +11,8 @@ import UpdateDebitTransaction, {
 } from "@/core/application/usecase/debit-transactions/UpdateDebitTransaction";
 import UseCase from "@/core/application/usecase/UseCase";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
-import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepository";
-import { TransactionRepositoryDatabase } from "@/core/infra/repository/TransactionRepository";
+import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";
+import { TransactionRepositoryDatabase } from "@/core/infra/repository/TransactionRepositoryDatabase";
 
 export type DebitTransactionDomain = {
   CreateDebitTransaction: UseCase<CreateDebitTransactionInput, CreateDebitTransactionOutput>;

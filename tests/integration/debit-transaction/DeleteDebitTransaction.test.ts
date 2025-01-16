@@ -3,8 +3,8 @@ import CreateDebitTransaction from "@/core/application/usecase/debit-transaction
 import DeleteDebitTransaction from "@/core/application/usecase/debit-transactions/DeleteDebitTransaction";
 import GetDebitTransaction from "@/core/application/usecase/debit-transactions/GetDebitTransaction";
 import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
-import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepository";
-import { TransactionRepositoryDatabase } from "@/core/infra/repository/TransactionRepository";
+import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";
+import { TransactionRepositoryDatabase } from "@/core/infra/repository/TransactionRepositoryDatabase";
 import CategoryDummy from "@/tests/dummies/CategoryDummy";
 import DebitTransactionDummy from "@/tests/dummies/DebitTransactionDummy";
 import { beforeAll, expect, test } from "vitest";
