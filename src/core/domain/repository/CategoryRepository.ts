@@ -7,4 +7,5 @@ export default interface CategoryRepository {
   findById(id: string): Promise<Category | undefined>;
   findByName(name: string): Promise<Category | undefined>;
   hasTransactions(id: string): Promise<boolean>;
+  existsAll(ids: string[]): Promise<boolean>;
 }

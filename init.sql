@@ -22,4 +22,4 @@ CREATE TABLE
 ALTER TABLE myfinances.transactions
 ADD COLUMN category_id UUID NOT NULL;
 
-ALTER TABLE myfinances.transactions ADD FOREIGN KEY (category_id) REFERENCES myfinances.categories;
+ALTER TABLE myfinances.transactions ADD FOREIGN KEY (category_id) REFERENCES myfinances.categories ON DELETE CASCADE;

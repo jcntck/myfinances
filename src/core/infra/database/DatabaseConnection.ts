@@ -3,6 +3,7 @@ import pgp from "pg-promise";
 export default interface DatabaseConnection {
   buildStatement(statement: string, params?: any[]): string;
   query(statement: string, params?: any[]): Promise<any>;
+  transaction(statements: string[], tag?: string): Promise<any>;
   disconnect(): Promise<void>;
   truncate(tables: string[]): Promise<void>;
 }
@@ -32,6 +33,16 @@ export class PgPromiseAdapter implements DatabaseConnection {
 
   async query(statement: string, params?: any[]): Promise<any> {
     return this.connection.query(statement, params);
+  }
+
+  async transaction(statements: string[], tag: string = "application-transaction"): Promise<any> {
+    return this.connection.tx(tag, (t) => {
+      let q = [];
+      for (const statement of statements) {
+        q.push(t.any(statement));
+      }
+      return t.batch(q);
+    });
   }
 
   async disconnect(): Promise<void> {

@@ -2,7 +2,6 @@
 
 import { deleteTransaction } from "@/app/actions/transactions";
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
-import { AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,7 +14,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Edit, MoreVertical, Trash } from "lucide-react";
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useState } from "react";
 
 interface TransactionDataTableColumnActionsProps extends React.HTMLAttributes<HTMLDivElement> {
   transactionId: string;

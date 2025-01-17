@@ -13,6 +13,7 @@ export enum TransactionType {
 export default class Transaction {
   private _id: UUID;
   private _categoryId: UUID;
+  private _status: TransactionStatus;
 
   constructor(
     id: string,
@@ -20,17 +21,18 @@ export default class Transaction {
     readonly description: string,
     readonly value: number,
     categoryId: string,
-    readonly status: TransactionStatus,
+    status: TransactionStatus,
     readonly type: TransactionType
   ) {
     this._id = new UUID(id);
     if (!description) throw new Error("[Transaction] description cannot be empty");
     if (!categoryId) throw new Error("[Transaction] categoryId cannot be empty");
-    if (!value) throw new Error("[Transaction] value cannot be 0");
     this._categoryId = new UUID(categoryId);
+    if (!value) throw new Error("[Transaction] value cannot be 0");
     if (!status) throw new Error("[Transaction] status cannot be empty");
     if (status !== TransactionStatus.PENDING && status !== TransactionStatus.PAID)
       throw new Error("[Transaction] status must be pending or paid");
+    this._status = status;
     if (!type) throw new Error("[Transaction] type cannot be empty");
     if (type !== TransactionType.CREDIT && type !== TransactionType.DEBIT)
       throw new Error("[Transaction] type must be credit or debit");
@@ -42,5 +44,21 @@ export default class Transaction {
 
   get categoryId(): string {
     return this._categoryId.getValue();
+  }
+
+  get status(): TransactionStatus {
+    return this._status;
+  }
+
+  paid() {
+    this._status = TransactionStatus.PAID;
+  }
+
+  isSame(transaction: Transaction) {
+    return (
+      this.date.getUTCMilliseconds() === transaction.date.getUTCMilliseconds() &&
+      this.description === transaction.description &&
+      this.value === transaction.value
+    );
   }
 }

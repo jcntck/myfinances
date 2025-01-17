@@ -1,4 +1,5 @@
 import DebitTransaction from "@/core/domain/entities/DebitTransaction";
+import UUID from "@/core/domain/vo/UUID";
 import { expect, test } from "vitest";
 
 test.each([
@@ -26,7 +27,7 @@ test.each([
 );
 
 test("Não deve criar uma transação se o valor for 0", () => {
-  expect(() => DebitTransaction.create(new Date(), "Description 1", 0, "categoryId")).toThrowError(
+  expect(() => DebitTransaction.create(new Date(), "Description 1", 0, UUID.create().getValue())).toThrowError(
     `[Transaction] value cannot be 0`
   );
 });

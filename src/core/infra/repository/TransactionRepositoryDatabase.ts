@@ -4,6 +4,9 @@ import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
 
 export class TransactionRepositoryDatabase implements TransactionRepository {
   constructor(private readonly connection: DatabaseConnection) {}
+  findByTransaction(transactions: Transaction[]): Promise<Transaction[]> {
+    throw new Error("Method not implemented.");
+  }
 
   async create(transaction: Transaction): Promise<void> {
     await this.connection.query(
@@ -43,5 +46,48 @@ export class TransactionRepositoryDatabase implements TransactionRepository {
       transactionData.status,
       transactionData.type
     );
+  }
+
+  async createAll(transactions: Transaction[]): Promise<string[]> {
+    const statements = transactions.map((transaction) =>
+      this.connection.buildStatement(
+        "insert into myfinances.transactions (id, date, description, value, status, type, category_id) values ($1, $2, $3, $4, $5, $6, $7) returning id",
+        [
+          transaction.id,
+          transaction.date,
+          transaction.description,
+          transaction.value,
+          transaction.status,
+          transaction.type,
+          transaction.categoryId,
+        ]
+      )
+    );
+    const result = await this.connection.transaction(statements, "create-transactions");
+    return result.map(([transaction]: any) => transaction.id);
+  }
+
+  async findByTransactions(transactions: Transaction[]): Promise<Transaction[]> {
+    const statements = transactions.map((transaction) =>
+      this.connection.buildStatement(
+        "select * from myfinances.transactions where date = $1 and description = $2 and value = $3",
+        [transaction.date, transaction.description, transaction.value]
+      )
+    );
+    const result = await this.connection.transaction(statements, "get-id-transactions");
+    return result
+      .filter(([transaction]: any) => transaction)
+      .map(
+        ([transactionData]: any) =>
+          new Transaction(
+            transactionData.id,
+            transactionData.date,
+            transactionData.description,
+            parseFloat(transactionData.value),
+            transactionData.category_id,
+            transactionData.status,
+            transactionData.type
+          )
+      );
   }
 }

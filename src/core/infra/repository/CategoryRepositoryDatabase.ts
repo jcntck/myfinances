@@ -42,4 +42,12 @@ export class CategoryRepositoryDatabase implements CategoryRepository {
     );
     return count.count > 0;
   }
+
+  async existsAll(ids: string[]): Promise<boolean> {
+    const [count] = await this.connection.query(
+      "select count(*)::integer as count from myfinances.categories where id in ($1:csv)",
+      [ids]
+    );
+    return count.count > 0;
+  }
 }

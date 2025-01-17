@@ -14,7 +14,7 @@ beforeAll(() => {
 });
 
 test("Deve retornar uma lista de transações de débito por data", async () => {
-  const startDate = subMonths(new Date(), 2);
+  const startDate = new Date();
   const endDate = addMonths(startDate, 1);
 
   const output = await listDebitTransactionsByRange.execute({ startDate, endDate });
