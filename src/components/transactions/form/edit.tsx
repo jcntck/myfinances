@@ -1,56 +1,62 @@
 "use client";
 
-import { Category } from "@/app/_types/entities";
+import { updateTransaction } from "@/app/actions/transactions";
+import { Category } from "@/app/types/entities";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { maskitoNumberOptionsGenerator } from "@maskito/kit";
 import { useMaskito } from "@maskito/react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const formSchema = z.object({
-  date: z.date({
-    required_error: "A data da transação é obrigatória.",
-  }),
+export const editTransactionSchema = z.object({
   description: z.string().min(2, {
     message: "A descrição é obrigatória.",
-  }),
-  value: z.string().min(4, {
-    message: "Valor é obrigatório.",
   }),
   categoryId: z.string().min(1, {
     message: "A categoria é obrigatória.",
   }),
 });
 
-export function TransactionForm({ categories }: { categories: Category[] }) {
+type EditTransaction = {
+  id: string;
+  description: string;
+  categoryId: string;
+};
+
+export function TransactionFormEdit({
+  categories,
+  transaction,
+}: {
+  categories: Category[];
+  transaction: EditTransaction;
+}) {
+  const { toast } = useToast();
+
   const categoriesOptions = categories.map((category) => ({
     label: category.name,
     value: category.id,
   }));
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof editTransactionSchema>>({
+    resolver: zodResolver(editTransactionSchema),
     defaultValues: {
-      date: new Date(),
-      description: "",
-      value: "",
-      categoryId: "",
+      description: transaction.description,
+      categoryId: transaction.categoryId,
     },
   });
 
   const maskedValueInputRef = useMaskito({
     options: maskitoNumberOptionsGenerator({
       decimalZeroPadding: true,
+      thousandSeparator: ".",
       precision: 2,
       decimalSeparator: ",",
       min: 0,
@@ -58,49 +64,20 @@ export function TransactionForm({ categories }: { categories: Category[] }) {
     }),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("in component", values);
-    // createTransaction(values)
-    //   .then((res) => console.log("inside component", res))
-    //   .catch((err) => console.log("inside component", err));
+  async function onSubmit(values: z.infer<typeof editTransactionSchema>) {
+    const response = await updateTransaction(values, transaction?.id);
+    if (response.error) {
+      toast({
+        title: `Erro ao ${transaction ? "atualizar" : "criar"} transação`,
+        description: response.error.message,
+        variant: "destructive",
+      });
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Data da transação</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn("w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                    >
-                      {field.value ? format(field.value, "dd/MM/y") : <span>Escolha uma data</span>}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    locale={ptBR}
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) => date < new Date("1900-01-01")}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="description"
@@ -111,26 +88,6 @@ export function TransactionForm({ categories }: { categories: Category[] }) {
                 <Input placeholder="Ex: Compra de roupas" {...field} />
               </FormControl>
               <FormDescription>Descrição breve da transação.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="value"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Valor da transação</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder=""
-                  {...field}
-                  ref={maskedValueInputRef}
-                  onInput={(evt) => {
-                    form.setValue("value", evt.currentTarget.value);
-                  }}
-                />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -187,7 +144,7 @@ export function TransactionForm({ categories }: { categories: Category[] }) {
           )}
         />
 
-        <Button type="submit">Criar</Button>
+        <Button type="submit">Editar</Button>
       </form>
     </Form>
   );

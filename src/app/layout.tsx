@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { setDefaultOptions } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,7 +29,10 @@ export default function RootLayout({
   setDefaultOptions({ locale: ptBR });
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <main>{children}</main>
+        <Toaster />
+      </body>
     </html>
   );
 }

@@ -11,3 +11,12 @@ export function parseToBRLCurrency(value: number) {
     currency: "BRL",
   });
 }
+
+export const parseBRLToFloat = (value: string): number => {
+  return parseFloat(value.replace(/[^\d,]/g, "").replace(",", "."));
+};
+
+export const parseStringToDate = (date: string | null, dateFnsHelper: Function) => {
+  if (!date) return dateFnsHelper(new Date());
+  return new Date(`${date}T00:00:00`);
+};

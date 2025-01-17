@@ -1,6 +1,6 @@
 "use client";
 
-import { Category } from "@/app/_types/entities";
+import { Category } from "@/app/types/entities";
 import { ActionsDropdownButton } from "@/components/transactions/actions/dropdown-button";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";

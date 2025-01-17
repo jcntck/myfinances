@@ -26,7 +26,7 @@ export default class Application {
   }
 
   register(): void {
-    this.databaseConnection = new PgPromiseAdapter();
+    this.databaseConnection = PgPromiseAdapter.Instance;
     this.categoryDomain = buildCategoryDomain(this.databaseConnection);
     this.debitTransactionDomain = buildDebitTransactionDomain(this.databaseConnection);
   }

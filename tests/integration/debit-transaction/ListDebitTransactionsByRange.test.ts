@@ -26,6 +26,7 @@ test("Deve retornar uma lista de transações de débito por data", async () => 
   expect(output[0].description).toBeDefined();
   expect(output[0].value).toBeDefined();
   expect(output[0].type).toBeDefined();
+  expect(output[0].status).toBeDefined();
   expect(output[0].categoryId).toBeDefined();
   expect(output[0].categoryName).toBeDefined();
 });

@@ -30,6 +30,7 @@ export default class TransactionDAODatabase implements TransactionDAO {
       description: transaction.description,
       value: parseFloat(transaction.value),
       type: transaction.type,
+      status: transaction.status,
       categoryId: transaction.category_id,
       categoryName: transaction.category_name,
     }));

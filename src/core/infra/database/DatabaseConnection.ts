@@ -9,6 +9,7 @@ export default interface DatabaseConnection {
 
 export class PgPromiseAdapter implements DatabaseConnection {
   private connection: pgp.IDatabase<any>;
+  private static instance: DatabaseConnection;
 
   constructor() {
     const host = process.env.POSTGRES_HOST;
@@ -18,6 +19,11 @@ export class PgPromiseAdapter implements DatabaseConnection {
     const database = process.env.POSTGRES_DATABASE;
 
     this.connection = pgp()(`postgres://${user}:${password}@${host}:${port}/${database}`);
+  }
+
+  static get Instance(): DatabaseConnection {
+    if (!PgPromiseAdapter.instance) PgPromiseAdapter.instance = new PgPromiseAdapter();
+    return PgPromiseAdapter.instance;
   }
 
   buildStatement(statement: string, params?: any[]): string {

@@ -6,6 +6,7 @@ export type TransactionDTO = {
   description: string;
   value: number;
   type: string;
+  status: string;
   categoryId: string;
   categoryName: string;
 };

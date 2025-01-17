@@ -1,53 +1,52 @@
-import { Category, DebitTransaction } from "@/app/_types/entities";
+import { DebitTransaction } from "@/app/types/entities";
+import Application from "@/Application";
 import { DatePickerWithRange } from "@/components/shared/date-picker-with-range";
-import { dataTableColumns } from "@/components/transactions/data-table/columns";
 import { TransactionsDataTable } from "@/components/transactions/data-table";
+import { dataTableColumns } from "@/components/transactions/data-table/columns";
+import { TransactionDTO } from "@/core/domain/dao/TransactionDao";
+import { getAllPaginatedRecords } from "@/lib/get-all-paginated-records";
+import { parseStringToDate } from "@/lib/utils";
+import { endOfMonth, startOfMonth } from "date-fns";
 
-export default async function DebitTransactionsPage() {
-  const transactions = generateDummyTransactions(10);
+export default async function DebitTransactionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from: string; to: string }>;
+}) {
+  const { from, to } = await searchParams;
+  const startDate = parseStringToDate(from, startOfMonth);
+  const endDate = parseStringToDate(to, endOfMonth);
+
+  const { ListCategories } = Application.Instance.Category;
+  const { ListTransactionsByRange } = Application.Instance.DebitTransaction;
+
+  const categories = await getAllPaginatedRecords(ListCategories, 1000);
+  const transactions = await ListTransactionsByRange.execute({ startDate, endDate });
 
   return (
-    <main className="container mx-auto py-4 flex flex-col gap-2">
+    <div className="container mx-auto py-4 flex flex-col gap-2">
       <div className="flex items-center justify-between border-b pb-2">
         <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight first:mt-0">Transações de débito</h1>
         <DatePickerWithRange />
       </div>
-      <TransactionsDataTable data={transactions} columns={dataTableColumns} categories={categories} />
-    </main>
+      <TransactionsDataTable
+        data={transactions.map(
+          (transaction: TransactionDTO) =>
+            ({
+              id: transaction.id,
+              date: new Date(transaction.date).toLocaleDateString("pt-BR"),
+              description: transaction.description,
+              value: transaction.value,
+              category: {
+                id: transaction.categoryId,
+                name: transaction.categoryName,
+              },
+              status: transaction.status,
+            } as DebitTransaction)
+        )}
+        columns={dataTableColumns}
+        categories={categories}
+      />
+    </div>
   );
 }
-
-const categories: Category[] = [
-  {
-    id: "category-1",
-    name: "Category 01",
-  },
-  {
-    id: "category-2",
-    name: "Category 02",
-  },
-  {
-    id: "category-3",
-    name: "Category 03",
-  },
-  {
-    id: "category-4",
-    name: "Category 04",
-  },
-  {
-    id: "category-5",
-    name: "Category 05",
-  },
-];
-
-const generateDummyTransactions = (length: number): DebitTransaction[] => {
-  const now = new Date();
-  return Array.from({ length }).map((_) => ({
-    id: crypto.randomUUID(),
-    date: new Date(now.setDate(Math.floor(Math.random() * 30) + 1)),
-    description: `Description ${Date.now()}`,
-    value: parseFloat(((Math.random() * 2 - 1) * 300).toFixed(2)),
-    category: categories[Math.floor(Math.random() * 4)],
-    status: Math.floor(Math.random() * 2) ? "paid" : "pending",
-  }));
-};

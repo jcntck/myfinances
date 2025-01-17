@@ -1,6 +1,6 @@
 export type DebitTransaction = {
   id: string;
-  date: Date;
+  date: string;
   description: string;
   value: number;
   category: { id: string; name: string };
