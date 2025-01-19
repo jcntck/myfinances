@@ -1,4 +1,4 @@
-import Transaction from "@/core/domain/entities/Transaction";
+import Transaction, { TransactionStatus } from "@/core/domain/entities/Transaction";
 import TransactionRepository from "@/core/domain/repository/TransactionRepository";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
 
@@ -48,6 +48,30 @@ export class TransactionRepositoryDatabase implements TransactionRepository {
     );
   }
 
+  async findByTransactionsWithStatus(transactions: Transaction[], status: TransactionStatus): Promise<Transaction[]> {
+    const statements = transactions.map((transaction) =>
+      this.connection.buildStatement(
+        "select * from myfinances.transactions where date = $1 and description = $2 and value = $3 and status = $4",
+        [transaction.date, transaction.description, transaction.value, status]
+      )
+    );
+    const result = await this.connection.transaction(statements, "get-id-transactions");
+    return result
+      .filter(([transaction]: any) => transaction)
+      .map(
+        ([transactionData]: any) =>
+          new Transaction(
+            transactionData.id,
+            transactionData.date,
+            transactionData.description,
+            parseFloat(transactionData.value),
+            transactionData.category_id,
+            transactionData.status,
+            transactionData.type
+          )
+      );
+  }
+
   async createAll(transactions: Transaction[]): Promise<string[]> {
     const statements = transactions.map((transaction) =>
       this.connection.buildStatement(
@@ -67,27 +91,13 @@ export class TransactionRepositoryDatabase implements TransactionRepository {
     return result.map(([transaction]: any) => transaction.id);
   }
 
-  async findByTransactions(transactions: Transaction[]): Promise<Transaction[]> {
+  async updateAll(transactions: Transaction[]): Promise<void> {
     const statements = transactions.map((transaction) =>
       this.connection.buildStatement(
-        "select * from myfinances.transactions where date = $1 and description = $2 and value = $3",
-        [transaction.date, transaction.description, transaction.value]
+        "update myfinances.transactions set description = $1, category_id = $2, status = $3 where id = $4",
+        [transaction.description, transaction.categoryId, transaction.status, transaction.id]
       )
     );
-    const result = await this.connection.transaction(statements, "get-id-transactions");
-    return result
-      .filter(([transaction]: any) => transaction)
-      .map(
-        ([transactionData]: any) =>
-          new Transaction(
-            transactionData.id,
-            transactionData.date,
-            transactionData.description,
-            parseFloat(transactionData.value),
-            transactionData.category_id,
-            transactionData.status,
-            transactionData.type
-          )
-      );
+    await this.connection.transaction(statements, "update-transactions");
   }
 }

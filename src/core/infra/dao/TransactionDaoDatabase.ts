@@ -1,9 +1,6 @@
-import CategoryDAO, { CategoryDTO } from "@/core/domain/dao/CategoryDao";
 import TransactionDAO, { TransactionDTO } from "@/core/domain/dao/TransactionDao";
 import { TransactionType } from "@/core/domain/entities/Transaction";
-import Pageable from "@/core/domain/util/Pageable";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
-import PageUtil from "@/core/infra/util/PageUtil";
 import * as DateFns from "date-fns";
 
 export default class TransactionDAODatabase implements TransactionDAO {

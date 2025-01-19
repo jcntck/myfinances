@@ -1,19 +1,20 @@
 import { CreateDebitTransactionInput } from "@/core/application/usecase/debit-transactions/CreateDebitTransaction";
 import UseCase from "@/core/application/usecase/UseCase";
 import DebitTransaction from "@/core/domain/entities/DebitTransaction";
+import { TransactionStatus } from "@/core/domain/entities/Transaction";
 import CategoryRepository from "@/core/domain/repository/CategoryRepository";
 import DebitTransactionRepository from "@/core/domain/repository/TransactionRepository";
 
-export default class CreateDebitTransactionList implements UseCase<CreateDebitTransactionListInput, string[]> {
+export default class ImportDebitTransactions implements UseCase<ImportDebitTransactionsInput, string[]> {
   constructor(
     private readonly debitTransactionRepository: DebitTransactionRepository,
     private readonly categoryRepository: CategoryRepository
   ) {}
 
-  async execute(input: CreateDebitTransactionListInput): Promise<string[]> {
+  async execute(input: ImportDebitTransactionsInput): Promise<string[]> {
     const categoriesIds = input.map((transaction) => transaction.categoryId);
     const categoryExists = await this.categoryRepository.existsAll(categoriesIds);
-    if (!categoryExists) throw new Error("[CreateDebitTransactionList] Category not found");
+    if (!categoryExists) throw new Error("[ImportDebitTransactions] Category not found");
 
     let debitTransactionList = input.map((input) => {
       const debitTransaction = DebitTransaction.create(input.date, input.description, input.value, input.categoryId);
@@ -21,7 +22,19 @@ export default class CreateDebitTransactionList implements UseCase<CreateDebitTr
       return debitTransaction;
     });
 
-    const existsTransactions = await this.debitTransactionRepository.findByTransactions(debitTransactionList);
+    const pendingTransactions = await this.debitTransactionRepository.findByTransactionsWithStatus(
+      debitTransactionList,
+      TransactionStatus.PENDING
+    );
+    if (!!pendingTransactions.length) {
+      pendingTransactions.forEach((transaction) => transaction.paid());
+      await this.debitTransactionRepository.updateAll(pendingTransactions);
+    }
+
+    const existsTransactions = await this.debitTransactionRepository.findByTransactionsWithStatus(
+      debitTransactionList,
+      TransactionStatus.PAID
+    );
     debitTransactionList = debitTransactionList.filter(
       (transaction) => !existsTransactions.some((existTransaction) => existTransaction.isSame(transaction))
     );
@@ -30,4 +43,4 @@ export default class CreateDebitTransactionList implements UseCase<CreateDebitTr
   }
 }
 
-export type CreateDebitTransactionListInput = CreateDebitTransactionInput[];
+export type ImportDebitTransactionsInput = CreateDebitTransactionInput[];

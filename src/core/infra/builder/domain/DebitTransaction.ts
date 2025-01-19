@@ -4,7 +4,7 @@ import CreateDebitTransaction, {
 } from "@/core/application/usecase/debit-transactions/CreateDebitTransaction";
 import CreateDebitTransactionList, {
   CreateDebitTransactionListInput,
-} from "@/core/application/usecase/debit-transactions/CreateDebitTransactionList";
+} from "@/core/application/usecase/debit-transactions/ImportDebitTransactions";
 import DeleteDebitTransaction from "@/core/application/usecase/debit-transactions/DeleteDebitTransaction";
 import GetDebitTransaction, {
   GetDebitTransactionOutput,
