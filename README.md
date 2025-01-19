@@ -34,3 +34,19 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Projeto
+
+## TODO (MVP)
+
+- [ ] Transações de crédito
+- [ ] Categorias
+- [ ] Autenticação
+- [ ] Criar pipeline para merge request para branch main
+- [ ] Publicar projeto na Vercel
+
+### TODO (Após deploy da v1 do projeto)
+
+- [ ] Separar os investimentos do débito
+- [ ] Ver se faz sentido adicionar o saldo das transações de débito
+- [ ] Embelezar o sistema + deixar responsivo
