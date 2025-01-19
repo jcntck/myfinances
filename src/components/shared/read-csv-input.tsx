@@ -1,45 +1,35 @@
-'use client';
+"use client";
 
-import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Spinner } from '../ui/spinner';
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Spinner } from "../ui/spinner";
 
 type ReadCSVInputProps = {
-  rawData: string[][];
-  setRawData: (rawData: string[][]) => void;
   onLoadData: (rawData: string[][]) => void;
   label: string;
   loadingMessage: string;
 };
 
-export default function ReadCSVInput({
-  rawData,
-  setRawData,
-  onLoadData,
-  label,
-  loadingMessage,
-}: ReadCSVInputProps) {
+export default function ReadCSVInput({ onLoadData, label, loadingMessage }: ReadCSVInputProps) {
   const { toast } = useToast();
   const [csvData, setCsvData] = useState<string[][]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || !files[0]) {
       toast({
-        title: 'Nenhum arquivo selecionado',
-        variant: 'destructive',
+        title: "Nenhum arquivo selecionado",
+        variant: "destructive",
       });
       return;
     }
-    if (!files[0].name.endsWith('.csv')) {
+    if (!files[0].name.endsWith(".csv")) {
       toast({
-        title: 'Arquivo inválido',
-        variant: 'destructive',
+        title: "Arquivo inválido",
+        variant: "destructive",
       });
       return;
     }
@@ -47,7 +37,7 @@ export default function ReadCSVInput({
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const text = e.target.result as string;
-      const rows = text.split('\n').map((row: string) => row.split(';'));
+      const rows = text.split("\n").map((row: string) => row.replace(/\r/g, "").split(";"));
       setCsvData(rows);
       onLoadData(rows);
       setIsLoading(false);
@@ -57,15 +47,10 @@ export default function ReadCSVInput({
 
   return (
     <>
-      {!isLoading && !csvData.length && (
+      {!isLoading && (
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="extrato">{label}</Label>
-          <Input
-            id="extrato"
-            type="file"
-            accept=".csv"
-            onChange={handleFileUpload}
-          />
+          <Input id="extrato" type="file" accept=".csv" onChange={handleFileUpload} />
         </div>
       )}
 

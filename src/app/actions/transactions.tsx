@@ -3,6 +3,7 @@
 import Application from "@/Application";
 import { createTransactionSchema } from "@/components/transactions/form/create";
 import { editTransactionSchema } from "@/components/transactions/form/edit";
+import { CreateDebitTransaction } from "@/components/transactions/import/debit-transactions";
 import { CreateDebitTransactionInput } from "@/core/application/usecase/debit-transactions/CreateDebitTransaction";
 import { UpdateDebitTransactionInput } from "@/core/application/usecase/debit-transactions/UpdateDebitTransaction";
 import { parseBRLToFloat } from "@/lib/utils";
@@ -72,4 +73,17 @@ export async function deleteTransaction(id: string) {
   }
 
   revalidatePath("/transacao/debito");
+}
+
+export async function createAllTransactions(data: CreateDebitTransaction[]) {
+  const { CreateDebitTransactionList } = Application.Instance.DebitTransaction;
+  try {
+    const ids = await CreateDebitTransactionList.execute(data);
+    return { message: `Foram importados um total de ${ids.length} transações.` };
+  } catch (err) {
+    console.error(err);
+    return {
+      error: "Ocorreu um erro ao importar as transações. Contate o suporte.",
+    };
+  }
 }

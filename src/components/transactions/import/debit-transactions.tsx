@@ -1,28 +1,18 @@
-'use client';
+"use client";
 
-import ReadCSVInput from '@/components/shared/read-csv-input';
-import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { useToast } from '@/hooks/use-toast';
-import {
-  parseBRLToFloat,
-  parseToBRLCurrency,
-  parseToDateFromFormat,
-} from '@/lib/utils';
-import { Edit, SaveAll } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import EditableRow from './table/editable-row';
-import { Category } from '@/app/types/entities';
+import { Category } from "@/app/types/entities";
+import ReadCSVInput from "@/components/shared/read-csv-input";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
+import { parseBRLToFloat, parseToDateFromFormat } from "@/lib/utils";
+import { SaveAll } from "lucide-react";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import EditableRow from "./table/editable-row";
+import { createAllTransactions } from "@/app/actions/transactions";
 
-const expectedHeaders = ['Data Lançamento', 'Descrição', 'Valor'];
+const expectedHeaders = ["data", "descricao", "valor"];
 
 export type CreateDebitTransaction = {
   date: Date;
@@ -31,24 +21,17 @@ export type CreateDebitTransaction = {
   categoryId: string;
 };
 
-export default function ImportDebitTransactions({
-  categories,
-}: {
-  categories: Category[];
-}) {
+export default function ImportDebitTransactions({ categories }: { categories: Category[] }) {
   const { toast } = useToast();
-  const [csvData, setCsvData] = useState<string[][]>([]);
-  const [transactions, setTransactions] = useState<CreateDebitTransaction[]>(
-    []
-  );
+  const [transactions, setTransactions] = useState<CreateDebitTransaction[]>([]);
   const [canSaveAll, setCanSaveAll] = useState(false);
 
   function handleCsvData(data: string[][]) {
     const headers = data.shift();
     if (!expectedHeaders.every((header) => headers?.includes(header))) {
       toast({
-        title: 'O arquivo CSV não possui as colunas esperadas',
-        variant: 'destructive',
+        title: "O arquivo CSV não possui as colunas esperadas",
+        variant: "destructive",
       });
       return;
     }
@@ -57,10 +40,10 @@ export default function ImportDebitTransactions({
     const transactions = rows.map((row) => {
       const [date, description, value] = row;
       return {
-        date: parseToDateFromFormat(date, 'dd/MM/yyyy'),
+        date: parseToDateFromFormat(date, "dd/MM/yyyy"),
         description,
         value: parseBRLToFloat(value),
-        categoryId: '',
+        categoryId: "",
       };
     });
 
@@ -68,9 +51,24 @@ export default function ImportDebitTransactions({
   }
 
   function validateTransactions() {
-    return transactions.every(
-      (transaction) => transaction.categoryId && transaction.description
-    );
+    return transactions.every((transaction) => transaction.categoryId && transaction.description);
+  }
+
+  async function handleSaveAll() {
+    const response = await createAllTransactions(transactions);
+    if (response.error) {
+      toast({
+        title: "Erro ao salvar transações",
+        description: response.error,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Transações criadas com sucesso!",
+        description: response.message,
+      });
+    }
+    redirect("/transacao/debito");
   }
 
   useEffect(() => {
@@ -79,13 +77,13 @@ export default function ImportDebitTransactions({
 
   return (
     <section>
-      <ReadCSVInput
-        rawData={csvData}
-        setRawData={setCsvData}
-        onLoadData={handleCsvData}
-        label="Selecione um extrato (csv)"
-        loadingMessage="Lendo os dados do extrato..."
-      />
+      {!transactions.length && (
+        <ReadCSVInput
+          onLoadData={handleCsvData}
+          label="Selecione um extrato (csv)"
+          loadingMessage="Lendo os dados do extrato..."
+        />
+      )}
 
       {!!transactions.length && (
         <>
@@ -96,7 +94,7 @@ export default function ImportDebitTransactions({
                 <TableHead className="w-[150px]">Data de lançamento</TableHead>
                 <TableHead>Descrição</TableHead>
                 <TableHead>Categoria</TableHead>
-                <TableHead className="text-right">Valor</TableHead>
+                <TableHead className="w-[150px] text-right">Valor</TableHead>
                 <TableHead className="text-center">Ação</TableHead>
               </TableRow>
             </TableHeader>
@@ -118,7 +116,7 @@ export default function ImportDebitTransactions({
             </TableBody>
           </Table>
           <div className="mt-4 flex justify-end">
-            <Button type="button" disabled={!canSaveAll}>
+            <Button type="button" disabled={!canSaveAll} onClick={handleSaveAll}>
               <SaveAll />
               Salvar transações
             </Button>
