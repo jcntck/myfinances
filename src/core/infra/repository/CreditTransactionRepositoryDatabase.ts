@@ -1,11 +1,13 @@
 import Transaction, { TransactionStatus } from "@/core/domain/entities/Transaction";
 import TransactionRepository from "@/core/application/repository/TransactionRepository";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
+import CreditTransaction from "@/core/domain/entities/CreditTransaction";
+import Installment from "@/core/domain/entities/Installment";
 
-export class TransactionRepositoryDatabase implements TransactionRepository {
+export class CreditTransactionRepositoryDatabase implements TransactionRepository {
   constructor(private readonly connection: DatabaseConnection) {}
 
-  async create(transaction: Transaction): Promise<void> {
+  async create(transaction: CreditTransaction): Promise<void> {
     await this.connection.query(
       "insert into myfinances.transactions (id, date, description, value, status, type, category_id) values ($1, $2, $3, $4, $5, $6, $7)",
       [
@@ -18,6 +20,22 @@ export class TransactionRepositoryDatabase implements TransactionRepository {
         transaction.categoryId,
       ]
     );
+
+    if (transaction.installments) {
+      const values = transaction.installments.map((installment) =>
+        this.connection.buildStatement("($1, $2, $3, $4, $5)", [
+          installment.id,
+          installment.date,
+          installment.value,
+          installment.installmentNumber,
+          transaction.id,
+        ])
+      );
+      await this.connection.query(
+        "insert into myfinances.installments (id, due_date, value, installment_number, transaction_id) values " +
+          values.join(", ")
+      );
+    }
   }
 
   async update(transaction: Transaction): Promise<void> {
@@ -31,17 +49,33 @@ export class TransactionRepositoryDatabase implements TransactionRepository {
     await this.connection.query("delete from myfinances.transactions where id = $1", [id]);
   }
 
-  async findById(id: string): Promise<Transaction | undefined> {
+  async findById(id: string): Promise<CreditTransaction | undefined> {
     const [transactionData] = await this.connection.query("select * from myfinances.transactions where id = $1", [id]);
     if (!transactionData) return undefined;
-    return new Transaction(
+    const installmentsData = await this.connection.query(
+      "select * from myfinances.installments WHERE transaction_id = $1",
+      [id]
+    );
+    let installments: Installment[] = [];
+    if (installmentsData.length > 0) {
+      installments = installmentsData.map((installment: any) => {
+        return new Installment(
+          installment.id,
+          new Date(installment.due_date),
+          parseFloat(installment.value),
+          parseInt(installment.installment_number)
+        );
+      });
+    }
+    return new CreditTransaction(
       transactionData.id,
       transactionData.date,
       transactionData.description,
       parseFloat(transactionData.value),
       transactionData.category_id,
       transactionData.status,
-      transactionData.type
+      transactionData.type,
+      installments.length > 0 ? installments : undefined
     );
   }
 

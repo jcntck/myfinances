@@ -1,4 +1,4 @@
-import Pageable from "@/core/domain/util/Pageable";
+import Pageable from "@/core/application/util/Pageable";
 
 export type CategoryDTO = {
   id: string;

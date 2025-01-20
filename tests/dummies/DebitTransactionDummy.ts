@@ -1,9 +1,11 @@
+const plusOrMinus = () => (Math.random() < 0.5 ? -1 : 1);
+
 export default class DebitTransactionDummy {
   static create({ categoryId }: CreateInput): CreateOutput {
     return {
       date: new Date(),
       description: `DebitTransaction Description ${Date.now()}`,
-      value: 100.5,
+      value: parseFloat((Math.random() * 1000).toFixed(2)) * plusOrMinus(),
       categoryId,
     };
   }

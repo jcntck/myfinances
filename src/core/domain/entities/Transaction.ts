@@ -12,6 +12,7 @@ export enum TransactionType {
 
 export default class Transaction {
   private _id: UUID;
+  private _value: number;
   private _categoryId: UUID;
   private _status: TransactionStatus;
 
@@ -19,7 +20,7 @@ export default class Transaction {
     id: string,
     readonly date: Date,
     readonly description: string,
-    readonly value: number,
+    value: number,
     categoryId: string,
     status: TransactionStatus,
     readonly type: TransactionType
@@ -29,6 +30,7 @@ export default class Transaction {
     if (!categoryId) throw new Error("[Transaction] categoryId cannot be empty");
     this._categoryId = new UUID(categoryId);
     if (!value) throw new Error("[Transaction] value cannot be 0");
+    this._value = value;
     if (!status) throw new Error("[Transaction] status cannot be empty");
     if (status !== TransactionStatus.PENDING && status !== TransactionStatus.PAID)
       throw new Error("[Transaction] status must be pending or paid");
@@ -40,6 +42,15 @@ export default class Transaction {
 
   get id(): string {
     return this._id.getValue();
+  }
+
+  get value(): number {
+    return this._value;
+  }
+
+  set value(value: number) {
+    if (!value) throw new Error("[Transaction] value cannot be 0");
+    this._value = value;
   }
 
   get categoryId(): string {

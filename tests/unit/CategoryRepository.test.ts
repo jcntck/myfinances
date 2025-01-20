@@ -1,4 +1,4 @@
-import CategoryRepository from "@/core/domain/repository/CategoryRepository";
+import CategoryRepository from "@/core/application/repository/CategoryRepository";
 import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
 import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";
 import crypto from "crypto";

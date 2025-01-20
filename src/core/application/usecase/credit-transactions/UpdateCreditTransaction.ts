@@ -1,8 +1,8 @@
 import UseCase from "@/core/application/usecase/UseCase";
 import CreditTransaction from "@/core/domain/entities/CreditTransaction";
 import { TransactionStatus } from "@/core/domain/entities/Transaction";
-import CategoryRepository from "@/core/domain/repository/CategoryRepository";
-import TransactionRepository from "@/core/domain/repository/TransactionRepository";
+import CategoryRepository from "@/core/application/repository/CategoryRepository";
+import TransactionRepository from "@/core/application/repository/TransactionRepository";
 
 export default class UpdateCreditTransaction implements UseCase<UpdateCreditTransactionInput, void> {
   constructor(

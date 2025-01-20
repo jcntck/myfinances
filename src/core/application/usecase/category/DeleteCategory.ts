@@ -1,5 +1,5 @@
 import UseCase from "@/core/application/usecase/UseCase";
-import CategoryRepository from "@/core/domain/repository/CategoryRepository";
+import CategoryRepository from "@/core/application/repository/CategoryRepository";
 
 export default class DeleteCategory implements UseCase<string, void> {
   constructor(private readonly categoryRepository: CategoryRepository) {}

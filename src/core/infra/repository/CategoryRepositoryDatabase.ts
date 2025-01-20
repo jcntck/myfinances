@@ -1,5 +1,5 @@
 import Category from "@/core/domain/entities/Category";
-import CategoryRepository from "@/core/domain/repository/CategoryRepository";
+import CategoryRepository from "@/core/application/repository/CategoryRepository";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
 
 export class CategoryRepositoryDatabase implements CategoryRepository {

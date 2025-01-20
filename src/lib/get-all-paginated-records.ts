@@ -1,5 +1,5 @@
 import UseCase from "@/core/application/usecase/UseCase";
-import Pageable from "@/core/domain/util/Pageable";
+import Pageable from "@/core/application/util/Pageable";
 
 async function* generator(usecase: UseCase<any, Pageable<any>>, size: number, params?: any) {
   let finished = false;

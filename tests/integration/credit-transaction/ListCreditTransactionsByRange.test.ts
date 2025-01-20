@@ -1,7 +1,7 @@
 import ListCreditTransactionsByRange from "@/core/application/usecase/credit-transactions/ListCreditTransactionsByRange";
-import TransactionDAODatabase from "@/core/infra/dao/TransactionDaoDatabase";
+import CreditTransactionDAODatabase from "@/core/infra/dao/CreditTransactionDaoDatabase";
 import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
-import { addMonths, subMonths } from "date-fns";
+import { subMonths } from "date-fns";
 import { afterAll, beforeAll, expect, test } from "vitest";
 
 let databaseConnection: DatabaseConnection;
@@ -9,7 +9,7 @@ let listCreditTransactionsByRange: ListCreditTransactionsByRange;
 
 beforeAll(() => {
   databaseConnection = new PgPromiseAdapter();
-  const transactionDAO = new TransactionDAODatabase(databaseConnection);
+  const transactionDAO = new CreditTransactionDAODatabase(databaseConnection);
   listCreditTransactionsByRange = new ListCreditTransactionsByRange(transactionDAO);
 });
 
@@ -28,6 +28,8 @@ test("Deve retornar uma lista de transações de crédito por data", async () =>
   expect(output[0].type).toBeDefined();
   expect(output[0].categoryId).toBeDefined();
   expect(output[0].categoryName).toBeDefined();
+  expect(output[0].installmentNumber).toBeDefined();
+  expect(output[0].maxInstallments).toBeDefined();
 });
 
 afterAll(async () => {

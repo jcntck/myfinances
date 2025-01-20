@@ -11,6 +11,11 @@ export type TransactionDTO = {
   categoryName: string;
 };
 
+export type CreditTransactionDTO = TransactionDTO & {
+  installmentNumber: number | null;
+  maxInstallments: number | null;
+};
+
 export default interface TransactionDAO {
   listByRange({
     startDate,

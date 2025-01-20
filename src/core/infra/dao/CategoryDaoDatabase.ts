@@ -1,5 +1,5 @@
 import CategoryDAO, { CategoryDTO } from "@/core/domain/dao/CategoryDao";
-import Pageable from "@/core/domain/util/Pageable";
+import Pageable from "@/core/application/util/Pageable";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
 import PageUtil from "@/core/infra/util/PageUtil";
 

@@ -1,6 +1,6 @@
 import UseCase from "@/core/application/usecase/UseCase";
 import CategoryDAO, { CategoryDTO } from "@/core/domain/dao/CategoryDao";
-import Pageable from "@/core/domain/util/Pageable";
+import Pageable from "@/core/application/util/Pageable";
 
 export default class ListCategories implements UseCase<ListCategoriesInput, Pageable<CategoryDTO>> {
   constructor(private readonly categoryDAO: CategoryDAO) {}

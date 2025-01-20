@@ -1,10 +1,11 @@
 export default class CreditTransactionDummy {
-  static create({ categoryId }: CreateInput): CreateOutput {
+  static create({ categoryId, installments }: CreateInput): CreateOutput {
     return {
       date: new Date(),
       description: `CreditTransaction Description ${Date.now()}`,
-      value: 100.5,
+      value: parseFloat((Math.random() * 1000).toFixed(2)) * -1,
       categoryId,
+      ...((installments && { installments }) || {}),
     };
   }
 
@@ -20,6 +21,7 @@ export default class CreditTransactionDummy {
 
 type CreateInput = {
   categoryId: string;
+  installments?: number;
 };
 
 type CreateOutput = {

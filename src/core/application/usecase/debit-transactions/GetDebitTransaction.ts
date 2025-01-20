@@ -1,6 +1,6 @@
 import UseCase from "@/core/application/usecase/UseCase";
 import { TransactionStatus, TransactionType } from "@/core/domain/entities/Transaction";
-import DebitTransactionRepository from "@/core/domain/repository/TransactionRepository";
+import DebitTransactionRepository from "@/core/application/repository/TransactionRepository";
 
 export default class GetDebitTransaction implements UseCase<string, GetDebitTransactionOutput> {
   constructor(private readonly debitTransactionRepository: DebitTransactionRepository) {}

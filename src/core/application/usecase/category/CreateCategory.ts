@@ -1,6 +1,6 @@
 import UseCase from "@/core/application/usecase/UseCase";
 import Category from "@/core/domain/entities/Category";
-import CategoryRepository from "@/core/domain/repository/CategoryRepository";
+import CategoryRepository from "@/core/application/repository/CategoryRepository";
 
 export default class CreateCategory implements UseCase<CreateCategoryInput, CreateCategoryOutput> {
   constructor(private readonly categoryRepository: CategoryRepository) {}

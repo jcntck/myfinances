@@ -1,8 +1,8 @@
 import UseCase from "@/core/application/usecase/UseCase";
 import DebitTransaction from "@/core/domain/entities/DebitTransaction";
 import { TransactionStatus } from "@/core/domain/entities/Transaction";
-import CategoryRepository from "@/core/domain/repository/CategoryRepository";
-import DebitTransactionRepository from "@/core/domain/repository/TransactionRepository";
+import CategoryRepository from "@/core/application/repository/CategoryRepository";
+import DebitTransactionRepository from "@/core/application/repository/TransactionRepository";
 
 export default class UpdateDebitTransaction implements UseCase<UpdateDebitTransactionInput, void> {
   constructor(

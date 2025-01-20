@@ -8,7 +8,7 @@ import ListCategories, { ListCategoriesInput } from "@/core/application/usecase/
 import UpdateCategory, { UpdateCategoryInput } from "@/core/application/usecase/category/UpdateCategory";
 import UseCase from "@/core/application/usecase/UseCase";
 import { CategoryDTO } from "@/core/domain/dao/CategoryDao";
-import Pageable from "@/core/domain/util/Pageable";
+import Pageable from "@/core/application/util/Pageable";
 import CategoryDAODatabase from "@/core/infra/dao/CategoryDaoDatabase";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
 import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";

@@ -30,7 +30,7 @@ test("Deve listar categorias", async () => {
 
 test("Deve listar categorias com filtro de nome", async () => {
   const category = CategoryDummy.create();
-  createCategory.execute(category);
+  await createCategory.execute(category);
   const { items } = await listCategories.execute({ page: 1, size: 10, name: category.name });
   expect(items).toBeDefined();
   expect(items[0].name).toBeDefined();
