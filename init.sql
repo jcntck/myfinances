@@ -16,7 +16,8 @@ CREATE TABLE
     description text NOT NULL,
     value numeric NOT NULL,
     status myfinances.transactions_status NOT NULL,
-    type myfinances.transactions_type NOT NULL
+    type myfinances.transactions_type NOT NULL,
+    is_recurring boolean default false
   );
 
 ALTER TABLE myfinances.transactions

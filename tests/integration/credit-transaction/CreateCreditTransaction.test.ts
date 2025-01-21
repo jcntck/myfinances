@@ -9,6 +9,7 @@ import CreditTransactionDummy from "@/tests/dummies/CreditTransactionDummy";
 import { afterAll, beforeAll, expect, test } from "vitest";
 
 let databaseConnection: DatabaseConnection;
+let transactionRepository: CreditTransactionRepositoryDatabase;
 let createCategory: CreateCategory;
 let createCreditTransaction: CreateCreditTransaction;
 let getCreditTransaction: GetCreditTransaction;
@@ -17,7 +18,7 @@ beforeAll(() => {
   databaseConnection = new PgPromiseAdapter();
   const categoryRepository = new CategoryRepositoryDatabase(databaseConnection);
   createCategory = new CreateCategory(categoryRepository);
-  const transactionRepository = new CreditTransactionRepositoryDatabase(databaseConnection);
+  transactionRepository = new CreditTransactionRepositoryDatabase(databaseConnection);
   createCreditTransaction = new CreateCreditTransaction(transactionRepository, categoryRepository);
   getCreditTransaction = new GetCreditTransaction(transactionRepository);
 });
@@ -54,6 +55,19 @@ test("Deve criar uma transação de crédito parcelada", async () => {
   expect(firstInstallment.date).toEqual(inputCreateCreditTransaction.date);
   expect(firstInstallment.value).toEqual(inputCreateCreditTransaction.value);
   expect(firstInstallment.installmentNumber).toEqual(1);
+});
+
+test("Deve criar uma transação de crédito recorrente", async () => {
+  const { categoryId } = await createCategory.execute(CategoryDummy.create());
+  const inputCreateCreditTransaction = CreditTransactionDummy.create({ categoryId, isRecurring: true });
+  const outputCreateCreditTransaction = await createCreditTransaction.execute(inputCreateCreditTransaction);
+
+  const transactions = await transactionRepository.findAllRecurringTransactions(
+    inputCreateCreditTransaction.description
+  );
+
+  expect(Array.isArray(transactions)).toBe(true);
+  expect(transactions.length).toBe(12);
 });
 
 test("Não deve criar uma transação de crédito se a categoria não existir", async () => {

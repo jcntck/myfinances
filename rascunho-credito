@@ -23,6 +23,10 @@ Se for uma compra parcelada, teremos uma tabela installments que possui:
 
 Na tabela principal de transactions o valor total será a soma de todas as parcelas, na listagem será ocultado este valor total e será retornado a data do mês correspondente.
 
+[feito]
+
+---
+
 Funcionamento do RECORRENTE (aplicavel para debito?)
 
 Adicionar coluna nullable de data de recorrência e recorrenciaId, e criar esta transação como 'pending' para os próximos 12 meses, sempre que a importação do extrato tornar esta compra 'paid', adicionar a transação do próximo mês.

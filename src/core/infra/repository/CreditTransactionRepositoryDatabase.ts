@@ -3,6 +3,7 @@ import TransactionRepository from "@/core/application/repository/TransactionRepo
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
 import CreditTransaction from "@/core/domain/entities/CreditTransaction";
 import Installment from "@/core/domain/entities/Installment";
+import { Console } from "console";
 
 export class CreditTransactionRepositoryDatabase implements TransactionRepository {
   constructor(private readonly connection: DatabaseConnection) {}
@@ -103,10 +104,31 @@ export class CreditTransactionRepositoryDatabase implements TransactionRepositor
       );
   }
 
-  async createAll(transactions: Transaction[]): Promise<string[]> {
+  async findAllRecurringTransactions(description: string): Promise<CreditTransaction[]> {
+    const result = await this.connection.query(
+      "select * from myfinances.transactions where description = $1 and type = 'credit' and is_recurring = true",
+      [description]
+    );
+    return result.map(
+      (transaction: any) =>
+        new CreditTransaction(
+          transaction.id,
+          new Date(transaction.date),
+          transaction.description,
+          parseFloat(transaction.value),
+          transaction.category_id,
+          transaction.status,
+          transaction.type,
+          undefined,
+          true
+        )
+    );
+  }
+
+  async createAll(transactions: CreditTransaction[]): Promise<string[]> {
     const statements = transactions.map((transaction) =>
       this.connection.buildStatement(
-        "insert into myfinances.transactions (id, date, description, value, status, type, category_id) values ($1, $2, $3, $4, $5, $6, $7) returning id",
+        "insert into myfinances.transactions (id, date, description, value, status, type, category_id, is_recurring) values ($1, $2, $3, $4, $5, $6, $7, $8) returning id",
         [
           transaction.id,
           transaction.date,
@@ -115,6 +137,7 @@ export class CreditTransactionRepositoryDatabase implements TransactionRepositor
           transaction.status,
           transaction.type,
           transaction.categoryId,
+          transaction.isRecurring,
         ]
       )
     );
