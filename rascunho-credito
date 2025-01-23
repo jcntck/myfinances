@@ -32,3 +32,11 @@ Funcionamento do RECORRENTE (aplicavel para debito?)
 Adicionar coluna nullable de data de recorrência e recorrenciaId, e criar esta transação como 'pending' para os próximos 12 meses, sempre que a importação do extrato tornar esta compra 'paid', adicionar a transação do próximo mês.
 
 Quando a recorrência for desativada, deletar todas as transações dos próximos 12 meses.
+
+--- Importação de transações de crédito
+
+- Deve criar parcelas e recorrencia?
+  Sim.
+
+- Se sim, o que fazer quando aquela transação já existir?
+- Apenas coloca a transação em questão como 'PAID'

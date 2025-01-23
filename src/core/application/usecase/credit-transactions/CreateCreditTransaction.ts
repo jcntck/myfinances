@@ -2,6 +2,7 @@ import CategoryRepository from "@/core/application/repository/CategoryRepository
 import TransactionRepository from "@/core/application/repository/TransactionRepository";
 import UseCase from "@/core/application/usecase/UseCase";
 import CreditTransaction from "@/core/domain/entities/CreditTransaction";
+import Installment from "@/core/domain/entities/Installment";
 
 export default class CreateCreditTransaction
   implements UseCase<CreateCreditTransactionInput, CreateCreditTransactionOutput>
@@ -12,16 +13,32 @@ export default class CreateCreditTransaction
   ) {}
 
   async execute(input: CreateCreditTransactionInput): Promise<CreateCreditTransactionOutput> {
+    const categoryExists = await this.categoryRepository.findById(input.categoryId);
+    if (!categoryExists) throw new Error("[CreateCreditTransaction] Category not found");
+
+    if (input.numberOfInstallments) {
+      const installment = Installment.create(
+        input.date,
+        input.description,
+        input.value,
+        input.categoryId,
+        input.numberOfInstallments
+      );
+
+      await this.transactionRepository.createInstallment(installment);
+
+      return {
+        installmentId: installment.id,
+      };
+    }
+
     const transaction = CreditTransaction.create(
       input.date,
       input.description,
       input.value,
       input.categoryId,
-      input.installments,
       input.isRecurring
     );
-    const categoryExists = await this.categoryRepository.findById(transaction.categoryId);
-    if (!categoryExists) throw new Error("[CreateCreditTransaction] Category not found");
 
     if (transaction.isRecurring) {
       const nextTransactions = transaction.createNextRecurringTransactions();
@@ -29,6 +46,7 @@ export default class CreateCreditTransaction
     }
 
     await this.transactionRepository.create(transaction);
+
     return {
       transactionId: transaction.id,
     };
@@ -40,10 +58,11 @@ export type CreateCreditTransactionInput = {
   description: string;
   value: number;
   categoryId: string;
-  installments?: number;
+  numberOfInstallments?: number;
   isRecurring?: boolean;
 };
 
 export type CreateCreditTransactionOutput = {
-  transactionId: string;
+  transactionId?: string;
+  installmentId?: string;
 };

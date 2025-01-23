@@ -1,3 +1,4 @@
+import Installment from "@/core/domain/entities/Installment";
 import Transaction, { TransactionStatus } from "@/core/domain/entities/Transaction";
 
 export default interface TransactionRepository {
@@ -6,6 +7,11 @@ export default interface TransactionRepository {
   delete(id: string): Promise<void>;
   findById(id: string): Promise<Transaction | undefined>;
   findByTransactionsWithStatus(transactions: Transaction[], status: TransactionStatus): Promise<Transaction[]>;
-  updateAll(transactions: Transaction[]): Promise<void>;
+  findInstallmentById(id: string): Promise<Installment | undefined>;
+  findAllRecurringTransactions(description: string): Promise<Transaction[]>;
   createAll(transactions: Transaction[]): Promise<string[]>;
+  updateAll(transactions: Transaction[]): Promise<void>;
+  createInstallment(installment: Installment): Promise<string>;
+  installmentExists(description: string, totalValue: number): Promise<boolean>;
+  recurrencyExists(description: string, value: number): Promise<boolean>;
 }

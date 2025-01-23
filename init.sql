@@ -28,10 +28,13 @@ ALTER TABLE myfinances.transactions ADD FOREIGN KEY (category_id) REFERENCES myf
 CREATE TABLE
   IF NOT EXISTS myfinances.installments (
     id UUID PRIMARY KEY,
-    due_date timestamp NOT NULL,
-    value numeric NOT NULL,
-    installment_number integer NOT NULL,
-    transaction_id UUID NOT NULL
+    total_value numeric NOT NULL,
+    description text NOT NULL
   );
 
-ALTER TABLE myfinances.installments ADD FOREIGN KEY (transaction_id) REFERENCES myfinances.transactions ON DELETE CASCADE;
+CREATE TABLE IF NOT EXISTS myfinances.transaction_installment (
+  transaction_id UUID REFERENCES myfinances.transactions (id) ON DELETE CASCADE,
+  installment_id UUID REFERENCES myfinances.installments (id) ON DELETE CASCADE,
+  installment_number integer NOT NULL,
+  PRIMARY KEY (transaction_id, installment_id)
+)

@@ -1,9 +1,20 @@
 import Transaction, { TransactionStatus } from "@/core/domain/entities/Transaction";
 import TransactionRepository from "@/core/application/repository/TransactionRepository";
 import DatabaseConnection from "@/core/infra/database/DatabaseConnection";
+import Installment from "@/core/domain/entities/Installment";
 
 export class TransactionRepositoryDatabase implements TransactionRepository {
   constructor(private readonly connection: DatabaseConnection) {}
+
+  createInstallment(installment: Installment): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+  installmentExists(description: string, totalValue: number): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
+  recurrencyExists(description: string, value: number): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
 
   async create(transaction: Transaction): Promise<void> {
     await this.connection.query(
@@ -96,5 +107,13 @@ export class TransactionRepositoryDatabase implements TransactionRepository {
       )
     );
     await this.connection.transaction(statements, "update-transactions");
+  }
+
+  findInstallmentById(id: string): Promise<Installment | undefined> {
+    throw new Error("Method not implemented.");
+  }
+
+  findAllRecurringTransactions(description: string): Promise<Transaction[]> {
+    throw new Error("Method not implemented.");
   }
 }

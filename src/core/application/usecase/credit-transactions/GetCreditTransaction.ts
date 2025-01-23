@@ -17,7 +17,6 @@ export default class GetCreditTransaction implements UseCase<string, GetCreditTr
       categoryId: transaction.categoryId,
       status: transaction.status,
       type: transaction.type,
-      installments: transaction.installments,
     };
   }
 }
@@ -30,10 +29,4 @@ type GetCreditTransactionOutput = {
   categoryId: string;
   status: TransactionStatus;
   type: TransactionType;
-  installments?: {
-    id: string;
-    date: Date;
-    value: number;
-    installmentNumber: number;
-  }[];
 };

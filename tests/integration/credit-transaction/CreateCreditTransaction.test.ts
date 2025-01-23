@@ -1,6 +1,8 @@
+import TransactionRepository from "@/core/application/repository/TransactionRepository";
 import CreateCategory from "@/core/application/usecase/category/CreateCategory";
 import CreateCreditTransaction from "@/core/application/usecase/credit-transactions/CreateCreditTransaction";
 import GetCreditTransaction from "@/core/application/usecase/credit-transactions/GetCreditTransaction";
+import CreditTransaction from "@/core/domain/entities/CreditTransaction";
 import DatabaseConnection, { PgPromiseAdapter } from "@/core/infra/database/DatabaseConnection";
 import { CategoryRepositoryDatabase } from "@/core/infra/repository/CategoryRepositoryDatabase";
 import { CreditTransactionRepositoryDatabase } from "@/core/infra/repository/CreditTransactionRepositoryDatabase";
@@ -9,7 +11,7 @@ import CreditTransactionDummy from "@/tests/dummies/CreditTransactionDummy";
 import { afterAll, beforeAll, expect, test } from "vitest";
 
 let databaseConnection: DatabaseConnection;
-let transactionRepository: CreditTransactionRepositoryDatabase;
+let transactionRepository: TransactionRepository;
 let createCategory: CreateCategory;
 let createCreditTransaction: CreateCreditTransaction;
 let getCreditTransaction: GetCreditTransaction;
@@ -26,11 +28,11 @@ beforeAll(() => {
 test("Deve criar uma transação de crédito", async () => {
   const { categoryId } = await createCategory.execute(CategoryDummy.create());
   const inputCreateCreditTransaction = CreditTransactionDummy.create({ categoryId });
-  const outputCreateCreditTransaction = await createCreditTransaction.execute(inputCreateCreditTransaction);
-  expect(outputCreateCreditTransaction.transactionId).toBeDefined();
+  const { transactionId } = await createCreditTransaction.execute(inputCreateCreditTransaction);
+  expect(transactionId).toBeDefined();
 
-  const outputGetDebitTransaction = await getCreditTransaction.execute(outputCreateCreditTransaction.transactionId);
-  expect(outputGetDebitTransaction.id).toEqual(outputCreateCreditTransaction.transactionId);
+  const outputGetDebitTransaction = await getCreditTransaction.execute(transactionId!);
+  expect(outputGetDebitTransaction.id).toEqual(transactionId);
   expect(outputGetDebitTransaction.date).toEqual(inputCreateCreditTransaction.date);
   expect(outputGetDebitTransaction.description).toEqual(inputCreateCreditTransaction.description);
   expect(outputGetDebitTransaction.value).toEqual(inputCreateCreditTransaction.value);
@@ -41,33 +43,32 @@ test("Deve criar uma transação de crédito", async () => {
 
 test("Deve criar uma transação de crédito parcelada", async () => {
   const { categoryId } = await createCategory.execute(CategoryDummy.create());
-  const inputCreateCreditTransaction = CreditTransactionDummy.create({ categoryId, installments: 10 });
-  const outputCreateCreditTransaction = await createCreditTransaction.execute(inputCreateCreditTransaction);
-  expect(outputCreateCreditTransaction.transactionId).toBeDefined();
-  const outputGetDebitTransaction = await getCreditTransaction.execute(outputCreateCreditTransaction.transactionId);
-  expect(outputGetDebitTransaction.id).toEqual(outputCreateCreditTransaction.transactionId);
-  expect(outputGetDebitTransaction.date).toEqual(inputCreateCreditTransaction.date);
-  expect(outputGetDebitTransaction.description).toEqual(inputCreateCreditTransaction.description);
-  expect(outputGetDebitTransaction.value).toEqual(inputCreateCreditTransaction.value * 10);
-  expect(outputGetDebitTransaction.categoryId).toEqual(inputCreateCreditTransaction.categoryId);
-  expect(outputGetDebitTransaction.installments!.length).toEqual(10);
-  const [firstInstallment] = outputGetDebitTransaction.installments!;
-  expect(firstInstallment.date).toEqual(inputCreateCreditTransaction.date);
-  expect(firstInstallment.value).toEqual(inputCreateCreditTransaction.value);
-  expect(firstInstallment.installmentNumber).toEqual(1);
+  const inputCreateCreditTransaction = CreditTransactionDummy.create({ categoryId, numberOfInstallments: 10 });
+  const { installmentId } = await createCreditTransaction.execute(inputCreateCreditTransaction);
+  expect(installmentId).toBeDefined();
+
+  const installment = await transactionRepository.findInstallmentById(installmentId!);
+  expect(installment).toBeDefined();
+  expect(installment!.id).toBeDefined();
+  expect(installment!.totalValue).toBeDefined();
+  expect(installment!.description).toBeDefined();
+  expect(installment!.transactions).toBeDefined();
+  expect(Array.isArray(installment!.transactions)).toBe(true);
+  const [transaction] = installment!.transactions;
+  expect(transaction.status).toBe("pending");
 });
 
 test("Deve criar uma transação de crédito recorrente", async () => {
   const { categoryId } = await createCategory.execute(CategoryDummy.create());
   const inputCreateCreditTransaction = CreditTransactionDummy.create({ categoryId, isRecurring: true });
-  const outputCreateCreditTransaction = await createCreditTransaction.execute(inputCreateCreditTransaction);
+  await createCreditTransaction.execute(inputCreateCreditTransaction);
 
   const transactions = await transactionRepository.findAllRecurringTransactions(
     inputCreateCreditTransaction.description
   );
 
   expect(Array.isArray(transactions)).toBe(true);
-  expect(transactions.length).toBe(12);
+  expect(transactions.length).toBe(CreditTransaction.RECURRING_NEXT_MONTHS);
 });
 
 test("Não deve criar uma transação de crédito se a categoria não existir", async () => {

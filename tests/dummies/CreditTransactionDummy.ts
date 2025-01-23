@@ -1,11 +1,11 @@
 export default class CreditTransactionDummy {
-  static create({ categoryId, installments, isRecurring }: CreateInput): CreateOutput {
+  static create({ date, description, categoryId, numberOfInstallments, isRecurring }: CreateInput): CreateOutput {
     return {
-      date: new Date(),
-      description: `CreditTransaction Description ${Date.now()}`,
+      date: date ?? new Date(),
+      description: description ?? `CreditTransaction Description ${Date.now()}`,
       value: parseFloat((Math.random() * 1000).toFixed(2)) * -1,
       categoryId,
-      ...((installments && { installments }) || {}),
+      ...((numberOfInstallments && { numberOfInstallments }) || {}),
       ...((isRecurring && { isRecurring }) || {}),
     };
   }
@@ -21,8 +21,10 @@ export default class CreditTransactionDummy {
 }
 
 type CreateInput = {
+  date?: Date;
+  description?: string;
   categoryId: string;
-  installments?: number;
+  numberOfInstallments?: number;
   isRecurring?: boolean;
 };
 
@@ -31,6 +33,8 @@ type CreateOutput = {
   description: string;
   value: number;
   categoryId: string;
+  numberOfInstallments?: number;
+  isRecurring?: boolean;
 };
 
 type UpdateInput = {
