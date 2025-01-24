@@ -1,9 +1,9 @@
 "use server";
 
 import Application from "@/Application";
-import { createTransactionSchema } from "@/components/transactions/form/create";
-import { editTransactionSchema } from "@/components/transactions/form/edit";
-import { CreateDebitTransaction } from "@/components/transactions/import/debit-transactions";
+import { createTransactionSchema } from "@/components/debit-transactions/form/create";
+import { editTransactionSchema } from "@/components/debit-transactions/form/edit";
+import { CreateDebitTransaction } from "@/components/debit-transactions/import/debit-transactions";
 import { CreateDebitTransactionInput } from "@/core/application/usecase/debit-transactions/CreateDebitTransaction";
 import { UpdateDebitTransactionInput } from "@/core/application/usecase/debit-transactions/UpdateDebitTransaction";
 import { parseBRLToFloat } from "@/lib/utils";
@@ -76,9 +76,9 @@ export async function deleteTransaction(id: string) {
 }
 
 export async function createAllTransactions(data: CreateDebitTransaction[]) {
-  const { CreateDebitTransactionList } = Application.Instance.DebitTransaction;
+  const { ImportDebitTransaction } = Application.Instance.DebitTransaction;
   try {
-    const ids = await CreateDebitTransactionList.execute(data);
+    const ids = await ImportDebitTransaction.execute(data);
     return { message: `Foram importados um total de ${ids.length} transações.` };
   } catch (err) {
     console.error(err);

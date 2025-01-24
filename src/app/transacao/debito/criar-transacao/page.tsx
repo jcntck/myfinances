@@ -1,7 +1,7 @@
 import { getAllPaginatedRecords } from "@/lib/get-all-paginated-records";
 import Application from "@/Application";
 import { createTransaction } from "@/app/actions/transactions";
-import { TransactionFormCreate } from "@/components/transactions/form/create";
+import { TransactionFormCreate } from "@/components/debit-transactions/form/create";
 
 export default async function DebitTransactionCreatePage() {
   const { ListCategories } = Application.Instance.Category;

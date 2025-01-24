@@ -12,6 +12,7 @@ export type TransactionDTO = {
 };
 
 export type CreditTransactionDTO = TransactionDTO & {
+  isRecurring: boolean;
   installmentNumber: number | null;
   maxInstallments: number | null;
 };

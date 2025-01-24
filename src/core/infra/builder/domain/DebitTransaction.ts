@@ -3,7 +3,7 @@ import CreateDebitTransaction, {
   CreateDebitTransactionOutput,
 } from "@/core/application/usecase/debit-transactions/CreateDebitTransaction";
 import CreateDebitTransactionList, {
-  CreateDebitTransactionListInput,
+  ImportDebitTransactionsInput,
 } from "@/core/application/usecase/debit-transactions/ImportDebitTransactions";
 import DeleteDebitTransaction from "@/core/application/usecase/debit-transactions/DeleteDebitTransaction";
 import GetDebitTransaction, {
@@ -25,7 +25,7 @@ import { TransactionRepositoryDatabase } from "@/core/infra/repository/Transacti
 export type DebitTransactionDomain = {
   ListTransactionsByRange: UseCase<ListDebitTransactionsByRangeInput, TransactionDTO[]>;
   CreateDebitTransaction: UseCase<CreateDebitTransactionInput, CreateDebitTransactionOutput>;
-  CreateDebitTransactionList: UseCase<CreateDebitTransactionListInput, string[]>;
+  ImportDebitTransaction: UseCase<ImportDebitTransactionsInput, string[]>;
   GetDebitTransaction: UseCase<string, GetDebitTransactionOutput>;
   UpdateDebitTransaction: UseCase<UpdateDebitTransactionInput, void>;
   DeleteDebitTransaction: UseCase<string, void>;
@@ -38,7 +38,7 @@ export function buildDebitTransactionDomain(databaseConnection: DatabaseConnecti
   return {
     ListTransactionsByRange: new ListDebitTransactionsByRange(transactionDAO),
     CreateDebitTransaction: new CreateDebitTransaction(transactionRepository, categoryRepository),
-    CreateDebitTransactionList: new CreateDebitTransactionList(transactionRepository, categoryRepository),
+    ImportDebitTransaction: new CreateDebitTransactionList(transactionRepository, categoryRepository),
     GetDebitTransaction: new GetDebitTransaction(transactionRepository),
     UpdateDebitTransaction: new UpdateDebitTransaction(transactionRepository, categoryRepository),
     DeleteDebitTransaction: new DeleteDebitTransaction(transactionRepository),

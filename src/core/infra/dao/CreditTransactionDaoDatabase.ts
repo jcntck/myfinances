@@ -22,8 +22,8 @@ export default class CreditTransactionDAODatabase implements TransactionDAO {
       `SELECT 
         t.*, 
         c.name AS category_name,
-        ti.installment_number, 
-        (SELECT COUNT(*) FROM myfinances.transaction_installment AS tmp WHERE tmp.installment_id = ti.installment_id) AS max_installment, 
+        ti.installment_number::integer, 
+        (SELECT COUNT(*)::integer FROM myfinances.transaction_installment AS tmp WHERE tmp.installment_id = ti.installment_id) AS max_installment, 
         i.total_value 
       FROM myfinances.transactions AS t 
       JOIN myfinances.categories AS c ON c.id = t.category_id
@@ -42,8 +42,9 @@ export default class CreditTransactionDAODatabase implements TransactionDAO {
       status: transaction.status,
       categoryId: transaction.category_id,
       categoryName: transaction.category_name,
+      isRecurring: transaction.is_recurring,
       installmentNumber: transaction.installment_number ?? null,
-      maxInstallments: transaction.max_installments ?? null,
+      maxInstallments: transaction.max_installment ?? null,
     }));
   }
 }

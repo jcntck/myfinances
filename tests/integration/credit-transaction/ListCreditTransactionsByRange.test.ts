@@ -28,6 +28,7 @@ test("Deve retornar uma lista de transações de crédito por data", async () =>
   expect(output[0].type).toBeDefined();
   expect(output[0].categoryId).toBeDefined();
   expect(output[0].categoryName).toBeDefined();
+  expect(output[0].isRecurring).toBeDefined();
   expect(output[0].installmentNumber).toBeDefined();
   expect(output[0].maxInstallments).toBeDefined();
 });

@@ -21,7 +21,7 @@ export default class GetCreditTransaction implements UseCase<string, GetCreditTr
   }
 }
 
-type GetCreditTransactionOutput = {
+export type GetCreditTransactionOutput = {
   id: string;
   date: Date;
   description: string;
