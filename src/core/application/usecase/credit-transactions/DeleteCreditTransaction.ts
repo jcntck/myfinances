@@ -7,6 +7,8 @@ export default class DeleteCreditTransaction implements UseCase<string, void> {
   async execute(transactionId: string): Promise<void> {
     const transaction = await this.transactionRepository.findById(transactionId);
     if (!transaction) throw new Error("[DeleteCreditTransaction] Credit transaction not found");
+    await this.transactionRepository.deleteInstallmentIfExists(transaction);
+    await this.transactionRepository.deleteRecurrencyIfExists(transaction);
     await this.transactionRepository.delete(transactionId);
   }
 }

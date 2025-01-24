@@ -1,42 +1,9 @@
-Tipos de compras no crédito
+O que eu devo atualizar nas compras de crédito parcelada e recorrente?
 
-A VISTA
-PARCELADO
-RECORRENTE
+- Valor é permitido? Não
+- Número de parcelas? Não
+- Data? Não
 
-Funcionamento do PARCELADO
+Todos esses dados são valores cruciais para sistema, se houver erros nestes casos, é necessário excluir e criar novamente.
 
-Se a compra for parcelada, como irei identifica-lo?
-
-- Valor e descrição
-
-Se a compra tiver como parcela 2 ou maior e não estiver cadastrado ainda?
-
-- Calcular os meses anteriores e fazer o cadastro
-
-Como organizarei isso no banco de dados?
-Se for uma compra parcelada, teremos uma tabela installments que possui:
-
-- transactionId
-- installment
-- dueDate
-
-Na tabela principal de transactions o valor total será a soma de todas as parcelas, na listagem será ocultado este valor total e será retornado a data do mês correspondente.
-
-[feito]
-
----
-
-Funcionamento do RECORRENTE (aplicavel para debito?)
-
-Adicionar coluna nullable de data de recorrência e recorrenciaId, e criar esta transação como 'pending' para os próximos 12 meses, sempre que a importação do extrato tornar esta compra 'paid', adicionar a transação do próximo mês.
-
-Quando a recorrência for desativada, deletar todas as transações dos próximos 12 meses.
-
---- Importação de transações de crédito
-
-- Deve criar parcelas e recorrencia?
-  Sim.
-
-- Se sim, o que fazer quando aquela transação já existir?
-- Apenas coloca a transação em questão como 'PAID'
+Neste caso é permitido que o usuário atualize nas parcelas os mesmo dados permitidos em uma transação a vista.

@@ -203,4 +203,61 @@ export class CreditTransactionRepositoryDatabase implements TransactionRepositor
 
     return result.count > 0;
   }
+
+  async updateInstallmentIfExists(transaction: CreditTransaction): Promise<void> {
+    const [result] = await this.connection.query(
+      "select myfinances.installments.id from myfinances.transaction_installment join myfinances.installments on myfinances.installments.id = myfinances.transaction_installment.installment_id where transaction_id = $1",
+      [transaction.id]
+    );
+    if (!result) return;
+
+    await this.connection.query("update myfinances.installments set description = $1 where id = $2", [
+      transaction.description,
+      result.id,
+    ]);
+    const installments = await this.connection.query(
+      "select * from myfinances.transaction_installment where installment_id = $1",
+      [result.id]
+    );
+    await this.connection.query(
+      "update myfinances.transactions set description = $1, category_id = $2 where id in ($3:csv)",
+      [
+        transaction.description,
+        transaction.categoryId,
+        installments.map((installment: any) => installment.transaction_id),
+      ]
+    );
+  }
+
+  async updateRecurrencyIfExists(description: string, transaction: Transaction): Promise<void> {
+    await this.connection.query(
+      "update myfinances.transactions set description = $1, category_id = $2 where description = $3",
+      [transaction.description, transaction.categoryId, description]
+    );
+  }
+
+  async deleteInstallmentIfExists(transaction: Transaction): Promise<void> {
+    const [result] = await this.connection.query(
+      "select myfinances.installments.id from myfinances.transaction_installment join myfinances.installments on myfinances.installments.id = myfinances.transaction_installment.installment_id where transaction_id = $1",
+      [transaction.id]
+    );
+    if (!result) return;
+    const installments = await this.connection.query(
+      "select * from myfinances.transaction_installment where installment_id = $1",
+      [result.id]
+    );
+    await this.connection.query("delete from myfinances.installments where id = $1", [result.id]);
+    await this.connection.query("delete from myfinances.transaction_installment where installment_id = $1", [
+      result.id,
+    ]);
+    await this.connection.query("delete from myfinances.transactions where id in ($1:csv)", [
+      installments.map((installment: any) => installment.transaction_id),
+    ]);
+  }
+
+  async deleteRecurrencyIfExists(transaction: Transaction): Promise<void> {
+    await this.connection.query("delete from myfinances.transactions where description = $1 and is_recurring = true", [
+      transaction.description,
+    ]);
+  }
 }

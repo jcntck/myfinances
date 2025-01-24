@@ -5,6 +5,20 @@ import Installment from "@/core/domain/entities/Installment";
 
 export class TransactionRepositoryDatabase implements TransactionRepository {
   constructor(private readonly connection: DatabaseConnection) {}
+  deleteInstallmentIfExists(transaction: Transaction): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  deleteRecurrencyIfExists(transaction: Transaction): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  updateRecurrencyIfExists(description: string, transaction: Transaction): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  updateInstallmentIfExists(transaction: Transaction): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 
   createInstallment(installment: Installment): Promise<string> {
     throw new Error("Method not implemented.");

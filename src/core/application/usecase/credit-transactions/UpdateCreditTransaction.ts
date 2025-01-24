@@ -22,8 +22,12 @@ export default class UpdateCreditTransaction implements UseCase<UpdateCreditTran
       (input.status as TransactionStatus) ?? transaction.status,
       transaction.type
     );
+
     const categoryExists = await this.categoryRepository.findById(updatedDebitTransaction.categoryId);
     if (!categoryExists) throw new Error("[UpdateCreditTransaction] Category not found");
+
+    await this.transactionRepository.updateInstallmentIfExists(updatedDebitTransaction);
+    await this.transactionRepository.updateRecurrencyIfExists(transaction.description, updatedDebitTransaction);
     await this.transactionRepository.update(updatedDebitTransaction);
   }
 }

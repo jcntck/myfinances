@@ -14,4 +14,8 @@ export default interface TransactionRepository {
   createInstallment(installment: Installment): Promise<string>;
   installmentExists(description: string, totalValue: number): Promise<boolean>;
   recurrencyExists(description: string, value: number): Promise<boolean>;
+  updateInstallmentIfExists(transaction: Transaction): Promise<void>;
+  updateRecurrencyIfExists(description: string, transaction: Transaction): Promise<void>;
+  deleteInstallmentIfExists(transaction: Transaction): Promise<void>;
+  deleteRecurrencyIfExists(transaction: Transaction): Promise<void>;
 }
