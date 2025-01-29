@@ -1,6 +1,6 @@
 "use client";
 
-import { createTransaction } from "@/app/actions/transactions";
+import { createTransaction } from "@/app/actions/credit-transactions";
 import { Category, DebitTransaction } from "@/app/types/entities";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -142,6 +142,7 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="description"
@@ -156,6 +157,7 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="value"

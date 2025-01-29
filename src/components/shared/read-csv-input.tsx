@@ -5,16 +5,17 @@ import { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
+import Papa from "papaparse";
 
 type ReadCSVInputProps = {
-  onLoadData: (rawData: string[][]) => void;
+  separator?: string;
+  onLoadData: (raw: Papa.ParseResult<any>) => void;
   label: string;
   loadingMessage: string;
 };
 
-export default function ReadCSVInput({ onLoadData, label, loadingMessage }: ReadCSVInputProps) {
+export default function ReadCSVInput({ separator = ";", onLoadData, label, loadingMessage }: ReadCSVInputProps) {
   const { toast } = useToast();
-  const [csvData, setCsvData] = useState<string[][]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,9 +38,8 @@ export default function ReadCSVInput({ onLoadData, label, loadingMessage }: Read
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const text = e.target.result as string;
-      const rows = text.split("\n").map((row: string) => row.replace(/\r/g, "").split(";"));
-      setCsvData(rows);
-      onLoadData(rows);
+      const raw = Papa.parse(text, { header: true });
+      onLoadData(raw);
       setIsLoading(false);
     };
     reader.readAsText(files[0]);

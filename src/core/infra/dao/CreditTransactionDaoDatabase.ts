@@ -29,7 +29,8 @@ export default class CreditTransactionDAODatabase implements TransactionDAO {
       JOIN myfinances.categories AS c ON c.id = t.category_id
       LEFT JOIN myfinances.transaction_installment AS ti ON ti.transaction_id = t.id 
       LEFT JOIN myfinances.installments AS i ON i.id = ti.installment_id 
-      WHERE $1::daterange @> date::date and type = $2`,
+      WHERE $1::daterange @> date::date and type = $2
+      order by date asc;`,
       [`[${startDateString}, ${endDateString}]`, type]
     );
 

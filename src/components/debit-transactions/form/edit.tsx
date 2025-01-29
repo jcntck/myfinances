@@ -1,6 +1,6 @@
 "use client";
 
-import { updateTransaction } from "@/app/actions/transactions";
+import { updateTransaction } from "@/app/actions/credit-transactions";
 import { Category } from "@/app/types/entities";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -10,8 +10,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { maskitoNumberOptionsGenerator } from "@maskito/kit";
-import { useMaskito } from "@maskito/react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -51,17 +49,6 @@ export function TransactionFormEdit({
       description: transaction.description,
       categoryId: transaction.categoryId,
     },
-  });
-
-  const maskedValueInputRef = useMaskito({
-    options: maskitoNumberOptionsGenerator({
-      decimalZeroPadding: true,
-      thousandSeparator: ".",
-      precision: 2,
-      decimalSeparator: ",",
-      min: 0,
-      prefix: "R$ ",
-    }),
   });
 
   async function onSubmit(values: z.infer<typeof editTransactionSchema>) {

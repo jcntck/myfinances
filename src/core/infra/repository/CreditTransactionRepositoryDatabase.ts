@@ -231,7 +231,7 @@ export class CreditTransactionRepositoryDatabase implements TransactionRepositor
 
   async updateRecurrencyIfExists(description: string, transaction: Transaction): Promise<void> {
     await this.connection.query(
-      "update myfinances.transactions set description = $1, category_id = $2 where description = $3",
+      "update myfinances.transactions set description = $1, category_id = $2 where description = $3 and is_recurring = true",
       [transaction.description, transaction.categoryId, description]
     );
   }

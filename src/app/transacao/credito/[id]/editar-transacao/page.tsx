@@ -14,7 +14,7 @@ export default async function DebitTransactionEditPage({ params }: { params: Pro
     <div className="container mx-auto py-4 flex flex-col gap-2">
       <div className="flex items-center justify-between border-b pb-2">
         <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight first:mt-0">
-          Editar registro - Transações de débito
+          Editar registro - Transações de crédito
         </h1>
       </div>
       <section>

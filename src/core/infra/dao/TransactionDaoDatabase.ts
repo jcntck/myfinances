@@ -18,7 +18,7 @@ export default class TransactionDAODatabase implements TransactionDAO {
     const startDateString = DateFns.format(startDate, "yyyy-MM-dd");
     const endDateString = DateFns.format(endDate, "yyyy-MM-dd");
     const result = await this.db.query(
-      "SELECT t.*, c.name as category_name FROM myfinances.transactions AS t JOIN myfinances.categories AS c ON t.category_id = c.id WHERE $1::daterange @> date::date and type = $2",
+      "SELECT t.*, c.name as category_name FROM myfinances.transactions AS t JOIN myfinances.categories AS c ON t.category_id = c.id WHERE $1::daterange @> date::date and type = $2 order by date asc;",
       [`[${startDateString}, ${endDateString}]`, type]
     );
     return result.map((transaction: any) => ({

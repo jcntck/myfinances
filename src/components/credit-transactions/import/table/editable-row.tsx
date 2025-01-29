@@ -1,35 +1,48 @@
 "use client";
 
 import { z } from "zod";
-import { CreateDebitTransaction } from "../debit-transactions";
+import { CreateCreditTransactions } from "../credit-transactions";
 import { Category } from "@/app/types/entities";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { cn, parseToBRLCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown, Edit, Save } from "lucide-react";
+import { Check, ChevronsUpDown, Circle, CircleCheck, Edit, Save } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Switch } from "@/components/ui/switch";
 
 type EditableRowProps = {
-  transaction: CreateDebitTransaction;
-  onSave: (transaction: CreateDebitTransaction) => void;
+  transaction: CreateCreditTransactions;
+  onSave: (transaction: CreateCreditTransactions) => void;
   categories: Category[];
 };
 
-const schema = z.object({
-  description: z.string().min(2, {
-    message: "A descrição é obrigatória.",
-  }),
-  categoryId: z.string().min(1, {
-    message: "A categoria é obrigatória.",
-  }),
-});
+const schema = z
+  .object({
+    description: z.string().min(2, {
+      message: "A descrição é obrigatória.",
+    }),
+    categoryId: z.string().min(1, {
+      message: "A categoria é obrigatória.",
+    }),
+    numberOfInstallments: z.coerce.number().optional().or(z.literal("")),
+    isRecurrent: z.boolean(),
+  })
+  .superRefine(({ numberOfInstallments, isRecurrent }, ctx) => {
+    if (isRecurrent && numberOfInstallments) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Uma transação não pode ser recorrente e parcelada ao mesmo tempo.",
+        path: ["isRecurrent"],
+      });
+    }
+  });
 
 export default function EditableRow({ transaction, categories, onSave }: EditableRowProps) {
   const [editMode, setEditMode] = useState(false);
@@ -38,6 +51,8 @@ export default function EditableRow({ transaction, categories, onSave }: Editabl
     defaultValues: {
       description: transaction.description,
       categoryId: transaction.categoryId,
+      numberOfInstallments: transaction.numberOfInstallments ?? "",
+      isRecurrent: transaction.isRecurring,
     },
   });
 
@@ -51,6 +66,7 @@ export default function EditableRow({ transaction, categories, onSave }: Editabl
       ...transaction,
       description: values.description,
       categoryId: values.categoryId,
+      isRecurring: values.isRecurrent,
     });
     setEditMode(false);
   }
@@ -61,12 +77,22 @@ export default function EditableRow({ transaction, categories, onSave }: Editabl
         <TableRow>
           <TableCell className="font-medium">{transaction.date.toLocaleDateString()}</TableCell>
           <TableCell>{transaction.description}</TableCell>
-          <TableCell>
+          <TableCell className="text-center">
             {transaction.categoryId
               ? categories.find((category) => category.id == transaction.categoryId)?.name
               : "N/A"}
           </TableCell>
-          <TableCell className="text-right">{parseToBRLCurrency(transaction.value)}</TableCell>
+          <TableCell className="text-center">{transaction.numberOfInstallments ?? "À Vista"}</TableCell>
+          <TableCell className="text-center">
+            <div className="flex justify-center">
+              {transaction.isRecurring ? (
+                <CircleCheck className="text-white bg-green-500 rounded-full" size={20} />
+              ) : (
+                <Circle className="text-gray-500" size={20} />
+              )}
+            </div>
+          </TableCell>
+          <TableCell className="text-right whitespace-nowrap">{parseToBRLCurrency(transaction.value)}</TableCell>
           <TableCell className="text-center">
             <Button size="sm" variant="outline" onClick={() => setEditMode(true)}>
               <Edit />
@@ -143,6 +169,21 @@ export default function EditableRow({ transaction, categories, onSave }: Editabl
                         </Command>
                       </PopoverContent>
                     </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </TableCell>
+            <TableCell className="text-center">{transaction.numberOfInstallments ?? "À Vista"}</TableCell>
+            <TableCell className="text-center">
+              <FormField
+                control={form.control}
+                name="isRecurrent"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

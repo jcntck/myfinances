@@ -1,6 +1,6 @@
 "use client";
 
-import { createTransaction } from "@/app/actions/transactions";
+import { createTransaction } from "@/app/actions/debit-transactions";
 import { Category, DebitTransaction } from "@/app/types/entities";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";

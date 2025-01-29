@@ -1,6 +1,6 @@
 "use client";
 
-import { updateTransaction } from "@/app/actions/transactions";
+import { updateTransaction } from "@/app/actions/debit-transactions";
 import { Category } from "@/app/types/entities";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";

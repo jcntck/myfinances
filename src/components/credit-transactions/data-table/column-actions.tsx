@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteTransaction } from "@/app/actions/transactions";
+import { deleteTransaction } from "@/app/actions/credit-transactions";
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
