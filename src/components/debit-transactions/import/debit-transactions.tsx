@@ -26,9 +26,9 @@ export default function ImportDebitTransactions({ categories }: { categories: Ca
   const [transactions, setTransactions] = useState<CreateDebitTransaction[]>([]);
   const [canSaveAll, setCanSaveAll] = useState(false);
 
-  function handleCsvData(data: string[][]) {
-    const headers = data.shift();
-    if (!expectedHeaders.every((header) => headers?.includes(header))) {
+  function handleCsvData(raw: Papa.ParseResult<any>) {
+    console.log(raw);
+    if (!expectedHeaders.every((header) => raw.meta.fields?.includes(header))) {
       toast({
         title: "O arquivo CSV não possui as colunas esperadas",
         variant: "destructive",
@@ -36,16 +36,16 @@ export default function ImportDebitTransactions({ categories }: { categories: Ca
       return;
     }
 
-    const rows = data.filter((row) => row.length === 3);
-    const transactions = rows.map((row) => {
-      const [date, description, value] = row;
-      return {
-        date: parseToDateFromFormat(date, "dd/MM/yyyy"),
-        description,
-        value: parseBRLToFloat(value),
-        categoryId: "",
-      };
-    });
+    const transactions = raw.data
+      .filter((row) => Object.keys(row).length === 3)
+      .map((row) => {
+        return {
+          date: parseToDateFromFormat(row.data, "dd/MM/yyyy"),
+          description: row.descricao,
+          value: parseBRLToFloat(row.valor),
+          categoryId: "",
+        };
+      });
 
     setTransactions(transactions);
   }
