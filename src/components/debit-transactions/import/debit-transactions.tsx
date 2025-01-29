@@ -27,7 +27,6 @@ export default function ImportDebitTransactions({ categories }: { categories: Ca
   const [canSaveAll, setCanSaveAll] = useState(false);
 
   function handleCsvData(raw: Papa.ParseResult<any>) {
-    console.log(raw);
     if (!expectedHeaders.every((header) => raw.meta.fields?.includes(header))) {
       toast({
         title: "O arquivo CSV não possui as colunas esperadas",
