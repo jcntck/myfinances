@@ -8,7 +8,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     env: {
-      ...config({ path: './.env' }).parsed,
+      ...config({ path: './.env.test' }).parsed,
     },
   },
 });

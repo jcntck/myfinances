@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
-    "services:up": "docker compose --env-file .env up -d",
-    "services:stop": "docker compose stop",
-    "services:down": "docker compose down --volumes"
+    "test:up": "docker compose -f docker-compose.test.yaml up -d",
+    "test:down": "docker compose -f docker-compose.test.yaml down -v",
+    "dev:up": "docker compose --env-file .env up -d",
+    "dev:stop": "docker compose stop",
+    "dev:down": "docker compose down --volumes"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -66,3 +68,4 @@
     "vitest": "^2.1.6"
   }
 }
+

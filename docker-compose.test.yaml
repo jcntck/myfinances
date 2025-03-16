@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  myfinances_test_db:
+    container_name: myfinances_test_db
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        - postgres-test:/data/postgres
+    ports:
+      - '5333:5432' # Porta diferente do dev para evitar conflitos
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -d test_db']
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  postgres-test:

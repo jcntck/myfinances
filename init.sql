@@ -7,7 +7,7 @@ CREATE TABLE
 
 CREATE TYPE myfinances.transactions_status AS ENUM ('pending', 'paid');
 
-CREATE TYPE myfinances.transactions_type as ENUM ('debit', 'credit');
+CREATE TYPE myfinances.transactions_type as ENUM ('debit', 'credit', 'investment');
 
 CREATE TABLE
   IF NOT EXISTS myfinances.transactions (
@@ -32,9 +32,10 @@ CREATE TABLE
     description text NOT NULL
   );
 
-CREATE TABLE IF NOT EXISTS myfinances.transaction_installment (
-  transaction_id UUID REFERENCES myfinances.transactions (id) ON DELETE CASCADE,
-  installment_id UUID REFERENCES myfinances.installments (id) ON DELETE CASCADE,
-  installment_number integer NOT NULL,
-  PRIMARY KEY (transaction_id, installment_id)
-)
+CREATE TABLE
+  IF NOT EXISTS myfinances.transaction_installment (
+    transaction_id UUID REFERENCES myfinances.transactions (id) ON DELETE CASCADE,
+    installment_id UUID REFERENCES myfinances.installments (id) ON DELETE CASCADE,
+    installment_number integer NOT NULL,
+    PRIMARY KEY (transaction_id, installment_id)
+  )
