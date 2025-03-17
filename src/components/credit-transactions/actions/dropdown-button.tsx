@@ -1,18 +1,27 @@
-"use client";
+'use client';
 
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { Table } from "@tanstack/react-table";
-import { FileUp, Plus } from "lucide-react";
+import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
+import { Table } from '@tanstack/react-table';
+import { FileUp, Plus } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 interface TransactionsActionsProps<TData> {
   table: Table<TData>;
 }
 
-export function ActionsDropdownButton<TData>({ table }: TransactionsActionsProps<TData>) {
+export function ActionsDropdownButton<TData>({
+  table,
+}: TransactionsActionsProps<TData>) {
+  const backToUrl = usePathname();
+  const searchParams = useSearchParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,7 +31,9 @@ export function ActionsDropdownButton<TData>({ table }: TransactionsActionsProps
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[98vw] md:w-[150px]">
-        <Link href="/transacao/credito/criar-transacao">
+        <Link
+          href={`/transacao/credito/criar-transacao?backToUrl=${backToUrl}&${searchParams.toString()}`}
+        >
           <DropdownMenuItem>
             <Plus className="mr-2 h-4 w-4" />
             Novo registro
@@ -38,3 +49,4 @@ export function ActionsDropdownButton<TData>({ table }: TransactionsActionsProps
     </DropdownMenu>
   );
 }
+

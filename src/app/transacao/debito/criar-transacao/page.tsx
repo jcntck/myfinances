@@ -1,7 +1,6 @@
-import { getAllPaginatedRecords } from "@/lib/get-all-paginated-records";
-import Application from "@/Application";
-import { createTransaction } from "@/app/actions/debit-transactions";
-import { TransactionFormCreate } from "@/components/debit-transactions/form/create";
+import Application from '@/Application';
+import { TransactionFormCreate } from '@/components/debit-transactions/form/create';
+import { getAllPaginatedRecords } from '@/lib/get-all-paginated-records';
 
 export default async function DebitTransactionCreatePage() {
   const { ListCategories } = Application.Instance.Category;
@@ -20,3 +19,4 @@ export default async function DebitTransactionCreatePage() {
     </div>
   );
 }
+

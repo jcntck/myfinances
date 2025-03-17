@@ -8,6 +8,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  customCommandFilter,
 } from '@/components/ui/command';
 import {
   Popover,
@@ -54,7 +55,14 @@ export function Combobox({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[98vw] sm:max-w-sm md:max-w-xs p-0">
-          <Command>
+          <Command
+            filter={(source: string, target: string) => {
+              const sourceLabel = options.find(
+                (option) => option.value === source
+              )?.label;
+              return customCommandFilter(sourceLabel ?? '', target);
+            }}
+          >
             <CommandInput placeholder={searchPlaceholder} />
             <CommandList>
               <CommandEmpty>{notFoundMessage}</CommandEmpty>

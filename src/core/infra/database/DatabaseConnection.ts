@@ -1,5 +1,9 @@
 import pgp from "pg-promise";
 
+declare global {
+  var instance: DatabaseConnection;
+}
+
 export default interface DatabaseConnection {
   buildStatement(statement: string, params?: any[]): string;
   query(statement: string, params?: any[]): Promise<any>;
@@ -23,8 +27,8 @@ export class PgPromiseAdapter implements DatabaseConnection {
   }
 
   static get Instance(): DatabaseConnection {
-    if (!PgPromiseAdapter.instance) PgPromiseAdapter.instance = new PgPromiseAdapter();
-    return PgPromiseAdapter.instance;
+    if (!globalThis.instance) global.instance = new PgPromiseAdapter();
+    return global.instance;
   }
 
   buildStatement(statement: string, params?: any[]): string {

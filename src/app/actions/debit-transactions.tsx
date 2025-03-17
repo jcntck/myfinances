@@ -1,17 +1,20 @@
-"use server";
+'use server';
 
-import Application from "@/Application";
-import { createTransactionSchema } from "@/components/debit-transactions/form/create";
-import { editTransactionSchema } from "@/components/debit-transactions/form/edit";
-import { CreateDebitTransaction } from "@/components/debit-transactions/import/debit-transactions";
-import { CreateDebitTransactionInput } from "@/core/application/usecase/debit-transactions/CreateDebitTransaction";
-import { UpdateDebitTransactionInput } from "@/core/application/usecase/debit-transactions/UpdateDebitTransaction";
-import { parseBRLToFloat } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { z } from "zod";
+import Application from '@/Application';
+import { createTransactionSchema } from '@/components/debit-transactions/form/create';
+import { editTransactionSchema } from '@/components/debit-transactions/form/edit';
+import { CreateDebitTransaction } from '@/components/debit-transactions/import/debit-transactions';
+import { CreateDebitTransactionInput } from '@/core/application/usecase/debit-transactions/CreateDebitTransaction';
+import { UpdateDebitTransactionInput } from '@/core/application/usecase/debit-transactions/UpdateDebitTransaction';
+import { parseBRLToFloat } from '@/lib/utils';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { z } from 'zod';
 
-export async function createTransaction(data: z.infer<typeof createTransactionSchema>) {
+export async function createTransaction(
+  data: z.infer<typeof createTransactionSchema>,
+  backTo?: string
+) {
   const { CreateDebitTransaction } = Application.Instance.DebitTransaction;
 
   try {
@@ -26,16 +29,20 @@ export async function createTransaction(data: z.infer<typeof createTransactionSc
     console.error(err);
     return {
       error: {
-        message: "Ocorreu um erro ao criar a transação. Contate o suporte.",
+        message: 'Ocorreu um erro ao criar a transação. Contate o suporte.',
       },
     };
   }
 
-  revalidatePath("/transacao/debito");
-  redirect("/transacao/debito");
+  revalidatePath('/transacao/debito');
+  redirect(backTo ?? '/transacao/debito');
 }
 
-export async function updateTransaction(data: z.infer<typeof editTransactionSchema>, id: string) {
+export async function updateTransaction(
+  data: z.infer<typeof editTransactionSchema>,
+  id: string,
+  backTo?: string
+) {
   const { UpdateDebitTransaction } = Application.Instance.DebitTransaction;
 
   try {
@@ -49,13 +56,14 @@ export async function updateTransaction(data: z.infer<typeof editTransactionSche
     console.error(err);
     return {
       error: {
-        message: "Ocorreu um erro ao atualizar a transação. Contate o suporte.",
+        message: 'Ocorreu um erro ao atualizar a transação. Contate o suporte.',
       },
     };
   }
 
-  revalidatePath("/transacao/debito");
-  redirect("/transacao/debito");
+  revalidatePath('/transacao/debito');
+
+  redirect(backTo ?? '/transacao/debito');
 }
 
 export async function deleteTransaction(id: string) {
@@ -67,23 +75,26 @@ export async function deleteTransaction(id: string) {
     console.error(err);
     return {
       error: {
-        message: "Ocorreu um erro ao deletar a transação. Contate o suporte.",
+        message: 'Ocorreu um erro ao deletar a transação. Contate o suporte.',
       },
     };
   }
 
-  revalidatePath("/transacao/debito");
+  revalidatePath('/transacao/debito');
 }
 
 export async function createAllTransactions(data: CreateDebitTransaction[]) {
   const { ImportDebitTransaction } = Application.Instance.DebitTransaction;
   try {
     const ids = await ImportDebitTransaction.execute(data);
-    return { message: `Foram importados um total de ${ids.length} transações.` };
+    return {
+      message: `Foram importados um total de ${ids.length} transações.`,
+    };
   } catch (err) {
     console.error(err);
     return {
-      error: "Ocorreu um erro ao importar as transações. Contate o suporte.",
+      error: 'Ocorreu um erro ao importar as transações. Contate o suporte.',
     };
   }
 }
+

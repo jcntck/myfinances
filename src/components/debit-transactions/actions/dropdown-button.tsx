@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 interface TransactionsActionsProps<TData> {
   table: Table<TData>;
@@ -19,6 +20,8 @@ interface TransactionsActionsProps<TData> {
 export function ActionsDropdownButton<TData>({
   table,
 }: TransactionsActionsProps<TData>) {
+  const backToUrl = usePathname();
+  const searchParams = useSearchParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,7 +31,9 @@ export function ActionsDropdownButton<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[98vw] md:w-[150px]">
-        <Link href="/transacao/debito/criar-transacao">
+        <Link
+          href={`/transacao/debito/criar-transacao?backToUrl=${backToUrl}&${searchParams.toString()}`}
+        >
           <DropdownMenuItem>
             <Plus className="mr-2 h-4 w-4" />
             Novo registro

@@ -1,8 +1,12 @@
-import Application from "@/Application";
-import { TransactionFormCreate } from "@/components/credit-transactions/form/create";
-import { getAllPaginatedRecords } from "@/lib/get-all-paginated-records";
+import Application from '@/Application';
+import { TransactionFormCreate } from '@/components/credit-transactions/form/create';
+import { getAllPaginatedRecords } from '@/lib/get-all-paginated-records';
 
-export default async function CreditTransactionCreatePage() {
+export default async function CreditTransactionCreatePage({
+  searchParams,
+}: {
+  searchParams: { backToUrl?: string };
+}) {
   const { ListCategories } = Application.Instance.Category;
   const categories = await getAllPaginatedRecords(ListCategories, 1000);
 
@@ -14,8 +18,12 @@ export default async function CreditTransactionCreatePage() {
         </h1>
       </div>
       <section>
-        <TransactionFormCreate categories={categories} />
+        <TransactionFormCreate
+          categories={categories}
+          backTo={searchParams.backToUrl}
+        />
       </section>
     </div>
   );
 }
+

@@ -3,7 +3,8 @@ export default class PageUtil {
     return (page - 1) * size;
   }
 
-  static calculatePage(totalItems: number, size: number): any {
+  static calculatePage(totalItems: number, size: number): number {
+    if (totalItems === 0) return 1;
     return Math.ceil(totalItems / size);
   }
 }

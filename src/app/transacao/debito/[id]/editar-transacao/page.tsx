@@ -1,10 +1,14 @@
-"use server";
+'use server';
 
-import Application from "@/Application";
-import { TransactionFormEdit } from "@/components/debit-transactions/form/edit";
-import { getAllPaginatedRecords } from "@/lib/get-all-paginated-records";
+import Application from '@/Application';
+import { TransactionFormEdit } from '@/components/debit-transactions/form/edit';
+import { getAllPaginatedRecords } from '@/lib/get-all-paginated-records';
 
-export default async function DebitTransactionEditPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function DebitTransactionEditPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const { ListCategories } = Application.Instance.Category;
   const { GetDebitTransaction } = Application.Instance.DebitTransaction;
@@ -18,8 +22,12 @@ export default async function DebitTransactionEditPage({ params }: { params: Pro
         </h1>
       </div>
       <section>
-        <TransactionFormEdit categories={categories} transaction={transaction} />
+        <TransactionFormEdit
+          categories={categories}
+          transaction={transaction}
+        />
       </section>
     </div>
   );
 }
+

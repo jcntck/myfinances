@@ -10,7 +10,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DATABASE}
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-        - postgres-test:/data/postgres
+      - postgres-test:/data/postgres
     ports:
       - '5333:5432' # Porta diferente do dev para evitar conflitos
     healthcheck:

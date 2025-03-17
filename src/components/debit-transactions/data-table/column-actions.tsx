@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { deleteTransaction } from "@/app/actions/debit-transactions";
-import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
-import { Button } from "@/components/ui/button";
+import { deleteTransaction } from '@/app/actions/debit-transactions';
+import { ConfirmDeleteDialog } from '@/components/shared/confirm-delete-dialog';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,19 +10,25 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
-import { Edit, MoreVertical, Trash } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+} from '@/components/ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
+import { Edit, MoreVertical, Trash } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
-interface TransactionDataTableColumnActionsProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TransactionDataTableColumnActionsProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   transactionId: string;
 }
 
-export function TransactionDataTableColumnActions({ transactionId }: TransactionDataTableColumnActionsProps) {
+export function TransactionDataTableColumnActions({
+  transactionId,
+}: TransactionDataTableColumnActionsProps) {
   const { toast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const backToUrl = usePathname();
+  const searchParams = useSearchParams();
 
   async function onConfirmDelete(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -32,15 +38,15 @@ export function TransactionDataTableColumnActions({ transactionId }: Transaction
 
     if (response?.error) {
       toast({
-        title: "Erro ao apagar transação",
+        title: 'Erro ao apagar transação',
         description: response.error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       return;
     }
 
     toast({
-      title: "Transação apagada com sucesso",
+      title: 'Transação apagada com sucesso',
     });
   }
 
@@ -56,7 +62,9 @@ export function TransactionDataTableColumnActions({ transactionId }: Transaction
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <Link href={`/transacao/debito/${transactionId}/editar-transacao`}>
+          <Link
+            href={`/transacao/debito/${transactionId}/editar-transacao?backToUrl=${backToUrl}&${searchParams.toString()}`}
+          >
             <DropdownMenuItem>
               <Edit />
               Editar

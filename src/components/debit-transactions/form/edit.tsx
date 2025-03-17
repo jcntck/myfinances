@@ -1,25 +1,45 @@
-"use client";
+'use client';
 
-import { updateTransaction } from "@/app/actions/credit-transactions";
-import { Category } from "@/app/types/entities";
-import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { updateTransaction } from '@/app/actions/debit-transactions';
+import { Category } from '@/app/types/entities';
+import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { useRedirectBack } from '@/hooks/use-redirect-back';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 export const editTransactionSchema = z.object({
   description: z.string().min(2, {
-    message: "A descrição é obrigatória.",
+    message: 'A descrição é obrigatória.',
   }),
   categoryId: z.string().min(1, {
-    message: "A categoria é obrigatória.",
+    message: 'A categoria é obrigatória.',
   }),
 });
 
@@ -37,6 +57,7 @@ export function TransactionFormEdit({
   transaction: EditTransaction;
 }) {
   const { toast } = useToast();
+  const backTo = useRedirectBack();
 
   const categoriesOptions = categories.map((category) => ({
     label: category.name,
@@ -52,12 +73,12 @@ export function TransactionFormEdit({
   });
 
   async function onSubmit(values: z.infer<typeof editTransactionSchema>) {
-    const response = await updateTransaction(values, transaction?.id);
+    const response = await updateTransaction(values, transaction?.id, backTo);
     if (response.error) {
       toast({
-        title: `Erro ao ${transaction ? "atualizar" : "criar"} transação`,
+        title: `Erro ao ${transaction ? 'atualizar' : 'criar'} transação`,
         description: response.error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   }
@@ -92,18 +113,26 @@ export function TransactionFormEdit({
                     <Button
                       variant="outline"
                       role="combobox"
-                      className={cn("w-[250px] justify-between", !field.value && "text-muted-foreground")}
+                      className={cn(
+                        'w-[250px] justify-between',
+                        !field.value && 'text-muted-foreground'
+                      )}
                     >
                       {field.value
-                        ? categoriesOptions.find((option) => option.value === field.value)?.label
-                        : "Selecione uma categoria..."}
+                        ? categoriesOptions.find(
+                            (option) => option.value === field.value
+                          )?.label
+                        : 'Selecione uma categoria...'}
                       <ChevronsUpDown className="opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
-                    <CommandInput placeholder="Buscar uma categoria..." className="h-9" />
+                    <CommandInput
+                      placeholder="Buscar uma categoria..."
+                      className="h-9"
+                    />
                     <CommandList>
                       <CommandEmpty>Nenhuma categoria encontrada.</CommandEmpty>
                       <CommandGroup>
@@ -112,12 +141,17 @@ export function TransactionFormEdit({
                             value={option.label}
                             key={option.value}
                             onSelect={() => {
-                              form.setValue("categoryId", option.value);
+                              form.setValue('categoryId', option.value);
                             }}
                           >
                             {option.label}
                             <Check
-                              className={cn("ml-auto", option.value === field.value ? "opacity-100" : "opacity-0")}
+                              className={cn(
+                                'ml-auto',
+                                option.value === field.value
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
                             />
                           </CommandItem>
                         ))}
@@ -136,3 +170,4 @@ export function TransactionFormEdit({
     </Form>
   );
 }
+

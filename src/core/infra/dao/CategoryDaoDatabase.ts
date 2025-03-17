@@ -18,7 +18,7 @@ export default class CategoryDAODatabase implements CategoryDAO {
     }
 
     const [{ count: totalItems }] = await this.db.query(
-      "SELECT count(*) FROM myfinances.categories " + whereClauses.join(" ")
+      "SELECT count(*)::integer FROM myfinances.categories " + whereClauses.join(" ")
     );
     const totalPages = PageUtil.calculatePage(totalItems, size);
     const offset = PageUtil.calculateOffset(page, size);

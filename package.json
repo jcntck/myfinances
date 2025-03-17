@@ -8,8 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
-    "test:up": "docker compose -f docker-compose.test.yaml up -d",
-    "test:down": "docker compose -f docker-compose.test.yaml down -v",
+    "coverage": "vitest run --coverage",
+    "test:up": "docker compose -f docker-compose.test.yaml up",
+    "test:down": "docker compose -f docker-compose.test.yaml down --volumes",
     "dev:up": "docker compose --env-file .env up -d",
     "dev:stop": "docker compose stop",
     "dev:down": "docker compose down --volumes"
@@ -56,6 +57,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "2.1.6",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "jsdom": "^25.0.1",
@@ -68,4 +70,3 @@
     "vitest": "^2.1.6"
   }
 }
-

@@ -1,41 +1,66 @@
-"use client";
+'use client';
 
-import { createTransaction } from "@/app/actions/debit-transactions";
-import { Category, DebitTransaction } from "@/app/types/entities";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useToast } from "@/hooks/use-toast";
-import { cn, parseToBRLCurrency } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { maskitoNumberOptionsGenerator } from "@maskito/kit";
-import { useMaskito } from "@maskito/react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { createTransaction } from '@/app/actions/debit-transactions';
+import { Category } from '@/app/types/entities';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { useRedirectBack } from '@/hooks/use-redirect-back';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { maskitoNumberOptionsGenerator } from '@maskito/kit';
+import { useMaskito } from '@maskito/react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { CalendarIcon, Check, ChevronsUpDown } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 export const createTransactionSchema = z.object({
   date: z.date({
-    required_error: "A data da transação é obrigatória.",
+    required_error: 'A data da transação é obrigatória.',
   }),
   description: z.string().min(2, {
-    message: "A descrição é obrigatória.",
+    message: 'A descrição é obrigatória.',
   }),
   value: z.string().min(4, {
-    message: "Valor é obrigatório.",
+    message: 'Valor é obrigatório.',
   }),
   categoryId: z.string().min(1, {
-    message: "A categoria é obrigatória.",
+    message: 'A categoria é obrigatória.',
   }),
 });
 
-export function TransactionFormCreate({ categories }: { categories: Category[] }) {
+export function TransactionFormCreate({
+  categories,
+}: {
+  categories: Category[];
+}) {
   const { toast } = useToast();
+  const backTo = useRedirectBack();
 
   const categoriesOptions = categories.map((category) => ({
     label: category.name,
@@ -46,30 +71,30 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
     resolver: zodResolver(createTransactionSchema),
     defaultValues: {
       date: new Date(),
-      description: "",
-      value: "",
-      categoryId: "",
+      description: '',
+      value: '',
+      categoryId: '',
     },
   });
 
   const maskedValueInputRef = useMaskito({
     options: maskitoNumberOptionsGenerator({
       decimalZeroPadding: true,
-      thousandSeparator: ".",
+      thousandSeparator: '.',
       precision: 2,
-      decimalSeparator: ",",
+      decimalSeparator: ',',
       min: 0,
-      prefix: "R$ ",
+      prefix: 'R$ ',
     }),
   });
 
   async function onSubmit(values: z.infer<typeof createTransactionSchema>) {
-    const response = await createTransaction(values);
+    const response = await createTransaction(values, backTo);
     if (response.error) {
       toast({
         title: `Erro ao criar transação`,
         description: response.error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   }
@@ -87,10 +112,17 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
-                      className={cn("w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                      variant={'outline'}
+                      className={cn(
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
                     >
-                      {field.value ? format(field.value, "dd/MM/y") : <span>Escolha uma data</span>}
+                      {field.value ? (
+                        format(field.value, 'dd/MM/y')
+                      ) : (
+                        <span>Escolha uma data</span>
+                      )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </FormControl>
@@ -101,7 +133,7 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
                     locale={ptBR}
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) => date < new Date("1900-01-01")}
+                    disabled={(date) => date < new Date('1900-01-01')}
                     initialFocus
                   />
                 </PopoverContent>
@@ -136,7 +168,7 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
                   {...field}
                   ref={maskedValueInputRef}
                   onInput={(evt) => {
-                    form.setValue("value", evt.currentTarget.value);
+                    form.setValue('value', evt.currentTarget.value);
                   }}
                 />
               </FormControl>
@@ -157,18 +189,26 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
                     <Button
                       variant="outline"
                       role="combobox"
-                      className={cn("w-[250px] justify-between", !field.value && "text-muted-foreground")}
+                      className={cn(
+                        'w-[250px] justify-between',
+                        !field.value && 'text-muted-foreground'
+                      )}
                     >
                       {field.value
-                        ? categoriesOptions.find((option) => option.value === field.value)?.label
-                        : "Selecione uma categoria..."}
+                        ? categoriesOptions.find(
+                            (option) => option.value === field.value
+                          )?.label
+                        : 'Selecione uma categoria...'}
                       <ChevronsUpDown className="opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
-                    <CommandInput placeholder="Buscar uma categoria..." className="h-9" />
+                    <CommandInput
+                      placeholder="Buscar uma categoria..."
+                      className="h-9"
+                    />
                     <CommandList>
                       <CommandEmpty>Nenhuma categoria encontrada.</CommandEmpty>
                       <CommandGroup>
@@ -177,12 +217,17 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
                             value={option.label}
                             key={option.value}
                             onSelect={() => {
-                              form.setValue("categoryId", option.value);
+                              form.setValue('categoryId', option.value);
                             }}
                           >
                             {option.label}
                             <Check
-                              className={cn("ml-auto", option.value === field.value ? "opacity-100" : "opacity-0")}
+                              className={cn(
+                                'ml-auto',
+                                option.value === field.value
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
                             />
                           </CommandItem>
                         ))}
@@ -201,3 +246,4 @@ export function TransactionFormCreate({ categories }: { categories: Category[] }
     </Form>
   );
 }
+

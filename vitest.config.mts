@@ -10,6 +10,9 @@ export default defineConfig({
     env: {
       ...config({ path: './.env.test' }).parsed,
     },
+    coverage: {
+      include: ['src/core/**'],
+    },
   },
 });
 
