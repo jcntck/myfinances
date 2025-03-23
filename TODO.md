@@ -1,3 +1,27 @@
+# Correções
+
+- Mudança de mês de forma global usando controle de estado (estudar melhor qual utilizar) [Feature] [23.mar]
+
+  - Mudança global [OK]
+  - Criar botões auxiliares [OK]
+  - Em vez de salvar o periodo em query string salvar no sessionStorage (deve manter somente para aquele trabalho) [OK]
+  - Mudar todas as consultas de transações para client_side [OK]
+  - Criar skeletons [ok]
+
+- Corrigir data em que as despesas de crédito são importadas automaticamente [Fix] [29.mar]
+
+  - Data de importação / criação deve ser diferente da data de lançamento [Backend]
+  - Data de lançamento será a partir de agora, meramente visual [FRONT]
+  - A data a ser considerada será a data criação [FRONT / BACK]
+  - BANCO INTER - Ignorar o pagamento do mes passado [FRONT]
+
+- Vincular o pagamento na aba débito do cartão de crédito a aba crédito automaticamente [Feature] [05.abr]
+
+  - Tabela auxiliar? Não é necessário, apenas uma coluna em transactions deve resolver.
+  - E se colocar no filtro dois meses? Simplesmente esconder do front se a fatura foi paga ou não, ou seja:
+    1. Se as datas de filtro serem o default do mês, apresentar o status da fatura
+    2. Caso seja uma pesquisa ampla, esconder o status.
+
 # Descrição do módulo de investimento
 
 1.  O usuário ao cadastrar a transação no módulo de débito, categorizará a transação como investimento.
@@ -16,3 +40,5 @@
 
         Entidade: investments
         Campos: description, type, value, transaction_id (FK)
+
+- Tratamentos de erros, autorizações e etc...

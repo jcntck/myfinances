@@ -7,12 +7,7 @@ export type DebitTransaction = {
   status: "pending" | "paid";
 };
 
-export type CreditTransaction = {
-  id: string;
-  date: string;
-  description: string;
-  value: number;
-  category: { id: string; name: string };
+export type CreditTransaction = DebitTransaction & {
   status: "pending" | "paid";
   isRecurring: boolean;
   installmentNumber: number | null;

@@ -1,65 +1,49 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
-  endOfMonth,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { usePeriod, usePeriodControl } from '@/contexts/period';
+import { cn } from '@/lib/utils';
+import {
   format,
   isFirstDayOfMonth,
   isLastDayOfMonth,
   isSameMonth,
-  parse,
-  startOfMonth,
   setDefaultOptions,
-} from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import * as React from "react";
-import { DateRange } from "react-day-picker";
+} from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { DateRange } from 'react-day-picker';
 
 setDefaultOptions({ locale: ptBR });
-
-const parseStringToDate = (date: string | null, dateFnsHelper: Function) => {
-  if (!date) return dateFnsHelper(new Date());
-  return parse(date, "yyyy-MM-dd", new Date());
-};
 
 function ButtonLabel({ dateRange }: { dateRange: DateRange | undefined }) {
   if (!dateRange || !dateRange.from || !dateRange.to) {
     return <span>Escolha uma data</span>;
   }
   const { from, to } = dateRange;
-  if (isSameMonth(from, to) && isFirstDayOfMonth(from) && isLastDayOfMonth(to)) {
+
+  if (
+    isSameMonth(from, to) &&
+    isFirstDayOfMonth(from) &&
+    isLastDayOfMonth(to)
+  ) {
     return <span className="uppercase">{format(from, "MMMM 'de' yyyy")}</span>;
   }
   return (
     <>
-      {format(from, "dd MMM y")} - {format(to, "dd MMM y")}
+      {format(from, 'dd MMM y')} - {format(to, 'dd MMM y')}
     </>
   );
 }
 
 export function DatePickerWithRange() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: parseStringToDate(searchParams.get("from"), startOfMonth),
-    to: parseStringToDate(searchParams.get("to"), endOfMonth),
-  });
-
-  function handleClose() {
-    if (!date) return;
-    const { from, to } = date;
-    const params = new URLSearchParams(searchParams.toString());
-    if (from) params.set("from", format(from, "yyyy-MM-dd"));
-    if (to) params.set("to", format(to, "yyyy-MM-dd"));
-    router.push(`${pathname}?${params}`);
-  }
+  const controls = usePeriodControl();
 
   return (
     <div className="grid gap-2">
@@ -68,24 +52,53 @@ export function DatePickerWithRange() {
           <Button
             id="date"
             variant="outline"
-            className={cn("justify-start text-left font-normal", !date && "text-muted-foreground")}
+            className={cn(
+              'justify-start text-left font-normal',
+              !controls.date && 'text-muted-foreground'
+            )}
           >
             <CalendarIcon />
-            <ButtonLabel dateRange={date} />
+            <ButtonLabel dateRange={controls.date} />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end" onCloseAutoFocus={handleClose}>
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-            locale={ptBR}
-          />
+        <PopoverContent className="w-auto space-y-2 p-2" align="center">
+          <div className="flex items-center gap-4 justify-center">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={controls.goToPreviousMonth}
+            >
+              <ChevronLeft />
+            </Button>
+            <Button variant="outline" onClick={controls.goToCurrentMonth}>
+              Ir para
+              <span className="font-semibold text-primary">
+                {controls.currentMonthLabel}
+              </span>
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={controls.goToNextMonth}
+            >
+              <ChevronRight />
+            </Button>
+          </div>
+          <div className="rounded-md border">
+            <Calendar
+              initialFocus
+              mode="range"
+              month={controls.month}
+              onMonthChange={controls.setMonth}
+              selected={controls.date}
+              onSelect={controls.setDate}
+              numberOfMonths={2}
+              locale={ptBR}
+            />
+          </div>
         </PopoverContent>
       </Popover>
     </div>
   );
 }
+
